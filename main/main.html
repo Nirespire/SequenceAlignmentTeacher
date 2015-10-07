@@ -1,0 +1,120 @@
+<div class="container" style="width:90%" ng-controller="mainCtrl">
+    <div class="row well">
+        <form class="form-inline">
+            <label for="sequence1">Sequence 1</label>
+            <input id="sequence1" class="form-control" type="text" ng-model="sequence1"></input>
+            <label for="sequence2">Sequence 2</label>
+            <input id="sequence2" class="form-control" type="text" ng-model="sequence2"></input>
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-3 well">
+            <form>
+                <div class="form-group">
+                    <h3>Alignment Method</h3>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alignmentMethod" id="global" value="global" ng-model="alignmentMethod"> Global
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alignmentMethod" id="local" value="local" ng-model="alignmentMethod"> Local
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alignmentMethod" id="dovetail" value="dovetail" ng-model="alignmentMethod"> Dovetail
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alignmentMethod" id="pattern" value="pattern" ng-model="alignmentMethod"> Pattern
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h3>Scoring Method</h3>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="scoringMethod" id="editDistance" value="editDistance" ng-model="scoringMethod"> Edit Distance
+                        </label>
+                    </div>
+                    <div class="form-inline">
+                        Match =
+                        <input id="matchScore" class="form-control" type="number" ng-model="edMatchScore" ng-disabled="scoringMethod!='editDistance'"></input>
+                    </div>
+                    <div class="form-inline">
+                        Mismatch =
+                        <input id="mismatchScore" class="form-control" type="number" ng-model="edMismatchScore" ng-disabled="scoringMethod!='editDistance'"></input>
+                    </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="scoringMethod" id="score" value="score" ng-model="scoringMethod"> Score
+                        </label>
+                    </div>
+                    <div class="form-inline">
+                        Match =
+                        <input id="matchScore" class="form-control" type="number" ng-model="scoreMatchScore" ng-disabled="scoringMethod!='score'"></input>
+                    </div>
+                    <div class="form-inline">
+                        Mismatch =
+                        <input id="mismatchScore" class="form-control" type="number" ng-model="scoreMismatchScore" ng-disabled="scoringMethod!='score'"></input>
+                    </div>
+                    <div class="form-inline">
+                        Insert =
+                        <input id="insertScore" class="form-control" type="number" ng-model="scoreInsertScore" ng-disabled="scoringMethod!='score'"></input>
+                    </div>
+                    <div class="form-inline">
+                        Delete =
+                        <input id="deleteScore" class="form-control" type="number" ng-model="scoreDeleteScore" ng-disabled="scoringMethod!='score'"></input>
+                    </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="scoringMethod" id="blosum45" value="blosum45" ng-model="scoringMethod"> BLOSUM45
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-inline">
+                        Banded Alignment
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="banded" id="banded" ng-model="banded">
+                            </label>
+                        </div>
+                        k =
+                        <input id="k" class="form-control" type="number" style="width:30%" ng-model="k" ng-disabled="!banded"></input>
+                    </div>
+                    <div class="form-inline">
+
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+
+        <div class="col-xs-9">
+
+            Sequence 1 :
+            <h4>{{sequence1}}</h4> Sequence 2 :
+            <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
+            <br> Scoring Method : {{scoringMethod}}
+            <br> ED Match Score : {{edMatchScore}}
+            <br> ED Mismatch Score :{{edMismatchScore}}
+            <br> Score Match Score : {{scoreMatchScore}}
+            <br> Score Mismatch Score : {{scoreMismatchScore}}
+            <br> Score Insert Score : {{scoreInsertScore}}
+            <br> Score Delete Score : {{scoreDeleteScore}}
+            <br> Banded ? {{banded}}
+            <br> k = {{k}}
+            <br>
+
+        </div>
+    </div>
+
+</div>

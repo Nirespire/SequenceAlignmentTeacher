@@ -3,14 +3,15 @@
 
     angular
         .module('seqalign')
-        .controller('mainCtrl', main);
+        .controller('appCtrl', main);
 
-    function main() {
-        var vmMain = this;
+    function main($scope) {
+        var vmApp = this;
         activate();
 
         function activate() {
-        	console.log("vmMain here");
+        	console.log("vmApp here");
+            
         }
 
     }

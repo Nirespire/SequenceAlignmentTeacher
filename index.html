@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="seqalign">
+<html lang="en" ng-app="seqalign" ng-controller="appCtrl">
 
 <head>
     <meta charset="utf-8">
@@ -23,7 +23,7 @@
 
 </head>
 
-<body ng-controller="mainCtrl">
+<body>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -38,23 +38,31 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li ng-class="($state.includes('home') ? 'active' : '')"><a ui-sref="home">Home</a></li>
+                    <li ng-class="($state.includes('about') ? 'active' : '')"><a ui-sref="about">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-
-    <div class="container">
-
-
-    </div>
+    
+    <div ui-view></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="js/lib/bootstrap.min.js"></script>
-    <script src="js/lib/angular.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script>
+    <script src="lib/angular.min.js"></script>
+    <script src="lib/angular-ui-router.js"></script>
 
-    <script src="js/app.module.js"></script>
-    <script src="js/app.controller.js"></script>
+    <script src="app.module.js"></script>
+    <script src="app.controller.js"></script>
+    <script src="app.route.js"></script>
+    
+    <!-- Main app page -->
+    <script src="main/main.module.js"></script>
+    <script src="main/main.controller.js"></script>
+    
+    <!-- About page -->
+    <script src="about/about.module.js"></script>
+    <script src="about/about.controller.js"></script>
 
 
 </body>
