@@ -18,6 +18,18 @@
             $scope.banded = false;
             
         }
+        
+        
+        $scope.initialize = function(){
+            console.log("initialize");
+        }
+        $scope.check = function(){
+            console.log("check");
+        }
+        
+        $scope.runNW = function(){
+            console.log("run");
+        }
 
     }
 })();
