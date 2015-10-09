@@ -104,19 +104,27 @@
 
         <div class="col-xs-9">
 
-            Sequence 1 :
-            <h4>{{sequence1}}</h4> Sequence 2 :
-            <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
-            <br> Scoring Method : {{scoringMethod}}
-            <br> ED Match Score : {{edMatchScore}}
-            <br> ED Mismatch Score :{{edMismatchScore}}
-            <br> Score Match Score : {{scoreMatchScore}}
-            <br> Score Mismatch Score : {{scoreMismatchScore}}
-            <br> Score Insert Score : {{scoreInsertScore}}
-            <br> Score Delete Score : {{scoreDeleteScore}}
-            <br> Banded ? {{banded}}
-            <br> k = {{k}}
-            <br>
+            <div class="row">
+                Sequence 1 :
+                <h4>{{sequence1}}</h4> Sequence 2 :
+                <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
+                <br> Scoring Method : {{scoringMethod}}
+                <br> ED Match Score : {{edMatchScore}}
+                <br> ED Mismatch Score :{{edMismatchScore}}
+                <br> Score Match Score : {{scoreMatchScore}}
+                <br> Score Mismatch Score : {{scoreMismatchScore}}
+                <br> Score Insert Score : {{scoreInsertScore}}
+                <br> Score Delete Score : {{scoreDeleteScore}}
+                <br> Banded ? {{banded}}
+                <br> k = {{k}}
+                <br> {{matrix}}
+            </div>
+            
+            <div class="row">
+                <table class="wikitable" id="matrix">
+                </table>
+                
+            </div>
 
         </div>
     </div>
