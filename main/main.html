@@ -120,8 +120,22 @@
                 <br> {{matrix}}
             </div>
             
+            
+
+            
             <div class="row">
-                <table class="wikitable" id="matrix">
+                
+                
+                <table class="row wikitable">
+                    <tr ng-repeat="row in matrix">
+                        <td ng-repeat="cell in row track by $index">
+                            <i ng-if="cell.dir=='diagonal'" class="glyphicon glyphicon-arrow-up rotate-45-left"></i>
+                            <i ng-if="cell.dir=='up'" class="glyphicon glyphicon-arrow-up"></i>
+                            <i ng-if="cell.dir=='left'" class="glyphicon glyphicon-arrow-left"></i>
+                            <input ng-if="cell.type=='score'" type="number" class="gridInput" ng-model="cell.value"></input>
+                            <input ng-if="cell.type=='seq'" ng-disabled="cell.type=='seq'" type="text" class="gridInput" ng-model="cell.value"></input>
+                        </td>
+                    </tr>
                 </table>
                 
             </div>

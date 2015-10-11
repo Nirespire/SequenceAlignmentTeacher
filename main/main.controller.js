@@ -37,18 +37,44 @@
             $scope.matrix = new Array($scope.sequence1.length + 2);
             for (var i = 0; i < $scope.matrix.length; i++) {
                 $scope.matrix[i] = new Array($scope.sequence2.length + 2);
-            }
-            
-            // Fill in initial zeroes
-            for (var i = 0; i < $scope.matrix.length; i++) {
-                if (i == 0) {
-                    for (var j = 0; j < $scope.matrix[i].length; j++) {
-                        $scope.matrix[i][j] = 0;
-                    }
-                } else {
-                    $scope.matrix[i][0] = 0;
+                for(var j = 0; j < $scope.matrix[i].length; j++){
+                    $scope.matrix[i][j] = {value:'', type:'score', dir:'NA'};
                 }
             }
+            
+            // Insert sequence
+            // Insert zeroes initially
+            var seq1 = 0, seq2 = 0;
+            for (var i = 0; i < $scope.matrix.length; i++) {
+                for(var j = 0; j < $scope.matrix[i].length; j++){
+                    if(i==0 && j>1){
+                        $scope.matrix[i][j].value = $scope.sequence2.charAt(seq2++);
+                        $scope.matrix[i][j].type = 'seq';
+                    }
+                    else if(i > 1 && j == 0){
+                        $scope.matrix[i][j].value = $scope.sequence1.charAt(seq1++);
+                        $scope.matrix[i][j].type = 'seq';
+                    }
+                    else if(i==1 && j>0){
+                        $scope.matrix[i][j].value = 0;
+                        $scope.matrix[i][j].type = 'score';
+                        
+                    }
+                    else if(i>0 && j == 1){
+                        $scope.matrix[i][j].value = 0;
+                        $scope.matrix[i][j].type = 'score';
+                        
+                    }
+                }
+            }
+            
+            //disable top left corner
+            $scope.matrix[0][0] = {value:'', type:'blank'};
+            $scope.matrix[0][1] = {value:'', type:'blank'};
+            $scope.matrix[1][0] = {value:'', type:'blank'};
+            
+
+            
 
             switch ($scope.alignmentMethod) {
 
@@ -56,21 +82,24 @@
 
                 break;
             case "global":
-                for(var i = 1; i <$scope.matrix.length; i++){
-                    $scope.matrix[i][0] = $scope.matrix[i-1][0] + $scope.edMismatchScore;
+                for(var i = 2; i <$scope.matrix.length; i++){
+                    $scope.matrix[i][1].value = $scope.matrix[i-1][1].value + $scope.edMismatchScore;
+                    $scope.matrix[i][1].dir = 'up';
                 }
                     
-                for (var j = 1; j < $scope.matrix[0].length; j++) {
-                    $scope.matrix[0][j] = $scope.matrix[0][j-1] + $scope.edMismatchScore;
+                for (var j = 2; j < $scope.matrix[2].length; j++) {
+                    $scope.matrix[1][j].value = $scope.matrix[1][j-1].value + $scope.edMismatchScore;
+                    $scope.matrix[1][j].dir = 'left';
                 }
                 
 
                 break;
             }
+            
+            //$scope.sequence2 = ' ' + $scope.sequence2;
 
             console.log($scope.matrix);
-
-            createTable($scope.matrix);
+            
         }
         $scope.check = function () {
             console.log("check");
@@ -83,34 +112,6 @@
 
         $scope.nw = function () {
 
-        }
-
-
-
-        function createTable(tableData) {
-            var table = document.createElement('table'),
-                tableBody = document.createElement('tbody');
-
-            table.className = "wikitable";
-            table.id = "matrix";
-
-            tableData.forEach(function (rowData) {
-                var row = document.createElement('tr');
-
-                rowData.forEach(function (cellData) {
-                    var cell = document.createElement('td');
-                    cell.appendChild(document.createTextNode((cellData == null) ? " " : cellData));
-                    row.appendChild(cell);
-                });
-
-                tableBody.appendChild(row);
-            });
-            
-            table.appendChild(tableBody);
-            
-            $('table.wikitable#matrix').replaceWith(table);
-            
-            console.log(table);
         }
 
     }
