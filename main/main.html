@@ -105,6 +105,39 @@
         <div class="col-xs-9">
 
             <div class="row">
+                <table class="row wikitable">
+                    <tr ng-repeat="row in matrix">
+                        <td ng-repeat="cell in row track by $index">
+                            <div class="container-fluid">
+
+
+                                <div class="row">
+                                    <div class="col-xs-4"><i ng-if="cell.diag" class="glyphicon glyphicon-arrow-up rotate-45-left"></i></div>
+                                    <div class="col-xs-4"><i ng-if="cell.up" class="glyphicon glyphicon-arrow-up"></i></div>
+                                    <div class="col-xs-4"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4"><i ng-if="cell.left" class="glyphicon glyphicon-arrow-left"></i></div>
+                                    <div class="col-xs-4">
+                                        <input ng-if="cell.type=='score'" type="number" class="gridInput" ng-model="cell.value"></input>
+                                        <input ng-if="cell.type=='seq'" ng-disabled="cell.type=='seq'" type="text" class="gridInput" ng-model="cell.value"></input>
+                                    </div>
+                                    <div class="col-xs-4"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-4"></div>
+                                    <div class="col-xs-4"></div>
+                                    <div class="col-xs-4"></div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Debug -->
+            <div class="row">
                 Sequence 1 :
                 <h4>{{sequence1}}</h4> Sequence 2 :
                 <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
@@ -117,28 +150,11 @@
                 <br> Score Delete Score : {{scoreDeleteScore}}
                 <br> Banded ? {{banded}}
                 <br> k = {{k}}
-                <br> {{matrix}}
+                <br> matrix = {{matrix}}
+                <br> subMatrix = {{subMatrix}}
             </div>
-            
-            
 
-            
-            <div class="row">
-                
-                
-                <table class="row wikitable">
-                    <tr ng-repeat="row in matrix">
-                        <td ng-repeat="cell in row track by $index">
-                            <i ng-if="cell.dir=='diagonal'" class="glyphicon glyphicon-arrow-up rotate-45-left"></i>
-                            <i ng-if="cell.dir=='up'" class="glyphicon glyphicon-arrow-up"></i>
-                            <i ng-if="cell.dir=='left'" class="glyphicon glyphicon-arrow-left"></i>
-                            <input ng-if="cell.type=='score'" type="number" class="gridInput" ng-model="cell.value"></input>
-                            <input ng-if="cell.type=='seq'" ng-disabled="cell.type=='seq'" type="text" class="gridInput" ng-model="cell.value"></input>
-                        </td>
-                    </tr>
-                </table>
-                
-            </div>
+
 
         </div>
     </div>
