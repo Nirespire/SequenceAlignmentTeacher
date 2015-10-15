@@ -1,6 +1,7 @@
 body {
-  padding-top: 60px;
+    padding-top: 60px;
 }
+
 
 /*@media (max-width: 979px) {
   body {
@@ -8,38 +9,40 @@ body {
   }
 }*/
 
+
 /**
  * wikitable class for skinning normal tables
  * keep in sync with commonPrint.css
  */
+
 table.wikitable {
-  margin: 1em 0;
-  background-color: #f9f9f9;
-  border: 1px solid #aaa;
-  border-collapse: collapse;
-  color: black;
+    margin: 1em 0;
+    background-color: #f9f9f9;
+    border: 1px solid #aaa;
+    border-collapse: collapse;
+    color: black;
 }
 
 table.wikitable > tr > th,
 table.wikitable > tr > td,
 table.wikitable > * > tr > th,
 table.wikitable > * > tr > td {
-  border: 1px solid #aaa;
-  padding: 0.2em 0.4em;
+    border: 1px solid #aaa;
+    padding: 0.2em 0.4em;
 }
 
 table.wikitable > tr > th,
 table.wikitable > * > tr > th {
-  background-color: #f2f2f2;
-  text-align: center;
+    background-color: #f2f2f2;
+    text-align: center;
 }
 
 table.wikitable > caption {
-  font-weight: bold;
+    font-weight: bold;
 }
 
-.gridInput{
-    width:30px;
+.gridInput {
+    width: 30px;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -47,7 +50,6 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-
 
 .rotate-45-left {
     display: inline-block;
@@ -63,4 +65,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .container-fluid {
     padding: 0px;
+}
+
+.lightpink {
+    background-color: lightpink;
 }
