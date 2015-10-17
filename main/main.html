@@ -148,6 +148,14 @@
 
             <!-- Debug -->
             <div class="row">
+                
+                <table class="wikitable">
+                    <tr ng-repeat="row in alignment">
+                        <td ng-repeat="cell in row track by $index"> <b>{{cell}}</b></td>
+                    </tr>
+                </table>
+                
+                
                 Sequence 1 :
                 <h4>{{sequence1}}</h4> Sequence 2 :
                 <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
@@ -162,6 +170,7 @@
                 <br> k = {{k}}
                 <br> matrix = {{matrix}}
                 <br> subMatrix = {{subMatrix}}
+                <br> alignment = {{alignment}}
             </div>
 
 
