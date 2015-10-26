@@ -7,4 +7,11 @@
         'seqalign.about'
     ]);
 
+    angular.module('seqalign')
+        .factory('$', ['$window',
+        function ($window) {
+                return $window.jQuery;
+        }
+    ]);
+
 })();

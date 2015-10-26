@@ -5,7 +5,7 @@
         .module('seqalign.main')
         .controller('mainCtrl', main);
 
-    function main($scope) {
+    function main($scope, $) {
         var vmMain = this;
         activate();
 
@@ -26,15 +26,81 @@
             $scope.scoreInsertScore = -2;
 
             $scope.blossum45MismatchScore = -5;
+            $scope.blossum62MismatchScore = -4;
 
             $scope.showArrows = true;
+
+            console.log($scope.blosum62('A', 'B'));
 
 
         }
 
+        // Restrict inputs to only be valid bases
+        $scope.aminoRegex = function (event) {
+            var charCode = event.keyCode;
+            if ($scope.aminoCharCodes.indexOf(charCode) != -1) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
 
         // onClick the Initialize button
         $scope.initialize = function () {
+
+            if ($scope.sequence1 === undefined || $scope.sequence1.length == 0) {
+
+
+                $("#sequence1").tooltip({
+
+                    // place tooltip on the right edge
+                    position: "center right",
+
+                    // a little tweaking of the position
+                    offset: [-2, 10],
+
+                    // use the built-in fadeIn/fadeOut effect
+                    effect: "fade",
+
+                    // custom opacity setting
+                    opacity: 0.7
+
+                });
+
+                $("#sequence1").tooltip("enable");
+                $("#sequence1").focus();
+
+                return;
+            }
+
+            $("#sequence1").tooltip('disable');
+
+            if ($scope.sequence2 === undefined || $scope.sequence2.length == 0) {
+
+                $("#sequence2").tooltip({
+
+                    // place tooltip on the right edge
+                    position: "center right",
+
+                    // a little tweaking of the position
+                    offset: [-2, 10],
+
+                    // use the built-in fadeIn/fadeOut effect
+                    effect: "fade",
+
+                    // custom opacity setting
+                    opacity: 0.7
+
+                });
+                
+                $("#sequence2").tooltip("enable");
+                $("#sequence2").focus();
+
+                return;
+            }
+
+            $("#sequence2").tooltip('disable');
 
             $scope.sequence1 = $scope.sequence1.toUpperCase();
             $scope.sequence2 = $scope.sequence2.toUpperCase();
@@ -140,6 +206,10 @@
                     mismatchScore = $scope.blossum45MismatchScore;
                     break;
 
+                case "blosum62":
+                    mismatchScore = $scope.blossum62MismatchScore;
+                    break;
+
                 }
 
                 // vertical first column
@@ -174,7 +244,17 @@
                 break;
 
             case "blosum45":
+                mismatch = $scope.blossum45MismatchScore;
+                insert = $scope.blossum45MismatchScore;
+                del = $scope.blossum45MismatchScore;
+                match = $scope.blosum45;
+                break;
 
+            case "blosum62":
+                mismatch = $scope.blossum62MismatchScore;
+                insert = $scope.blossum62MismatchScore;
+                del = $scope.blossum62MismatchScore;
+                match = $scope.blosum62;
                 break;
 
                 // use Edit Distance is some error happens
@@ -195,8 +275,10 @@
             // draw the traceback from the computed matrix
             if ($scope.alignmentMethod === "global") {
                 $scope.drawTraceback($scope.subMatrix);
-            } else {
-                $scope.drawTracebackLocal($scope.subMatrix);
+            } else if ($scope.alignmentMethod === "local") {
+                $scope.drawTracebackLocal($scope.subMatrix, "local");
+            } else if ($scope.alignmentMethod === "dovetail") {
+                $scope.drawTracebackLocal($scope.subMatrix, "dovetail");
             }
         }
 
@@ -207,14 +289,13 @@
 
                     restart = 0;
 
+                    up = matrix[i - 1][j].value + insert;
+                    left = matrix[i][j - 1].value + del;
+
                     // Diagonal scores are not constant
-                    if (scoring === "blosum45") {
-                        up = matrix[i - 1][j].value + $scope.blossum45MismatchScore;
-                        left = matrix[i][j - 1].value + $scope.blossum45MismatchScore;
-                        diag = matrix[i - 1][j - 1].value + $scope.blosum($scope.sequence1.charAt(i - 1), $scope.sequence2.charAt(j - 1));
+                    if (scoring === "blosum45" || scoring === "blosum62") {
+                        diag = matrix[i - 1][j - 1].value + match($scope.sequence1.charAt(i - 1), $scope.sequence2.charAt(j - 1));
                     } else {
-                        up = matrix[i - 1][j].value + insert;
-                        left = matrix[i][j - 1].value + del;
                         diag = ($scope.sequence1.charAt(i - 1) === $scope.sequence2.charAt(j - 1) ? matrix[i - 1][j - 1].value + match : matrix[i - 1][j - 1].value + mismatch);
                     }
 
@@ -237,7 +318,7 @@
                         }
                     }
 
-                    // scoring is score or blossum
+                    // scoring or blosum is score
                     // Looking for max value
                     else {
                         console.log(up, left, diag);
@@ -273,17 +354,13 @@
 
                     var up, left, diag;
 
-                    //console.log($scope.sequence1.charAt(j - 1) + " vs " + $scope.sequence2.charAt(i - 1));
-
+                    up = matrix[i - 1][j].value + insert;
+                    left = matrix[i][j - 1].value + del;
 
                     // Diagonal scores are not constant
-                    if (scoring === "blosum45") {
-                        up = matrix[i - 1][j].value + $scope.blossum45MismatchScore;
-                        left = matrix[i][j - 1].value + $scope.blossum45MismatchScore;
-                        diag = matrix[i - 1][j - 1].value + $scope.blosum($scope.sequence1.charAt(i - 1), $scope.sequence2.charAt(j - 1));
+                    if (scoring === "blosum45" || scoring === "blosum62") {
+                        diag = matrix[i - 1][j - 1].value + match($scope.sequence1.charAt(i - 1), $scope.sequence2.charAt(j - 1));
                     } else {
-                        up = matrix[i - 1][j].value + insert;
-                        left = matrix[i][j - 1].value + del;
                         diag = ($scope.sequence1.charAt(i - 1) === $scope.sequence2.charAt(j - 1) ? matrix[i - 1][j - 1].value + match : matrix[i - 1][j - 1].value + mismatch);
                     }
 
@@ -324,16 +401,40 @@
             }
         }
 
-        $scope.drawTracebackLocal = function (matrix) {
+        $scope.drawTracebackLocal = function (matrix, alignment) {
             var max = -9999999;
             var maxI = -1;
             var maxJ = -1;
-            for (var i = 1; i < matrix.length; i++) {
-                for (var j = 1; j < matrix[i].length; j++) {
-                    if (matrix[i][j].value > max) {
-                        max = matrix[i][j].value;
+
+            // Start at max of whole matrix
+            if (alignment === "local") {
+                for (var i = 1; i < matrix.length; i++) {
+                    for (var j = 1; j < matrix[i].length; j++) {
+                        if (matrix[i][j].value > max) {
+                            max = matrix[i][j].value;
+                            maxI = i;
+                            maxJ = j;
+                        }
+                    }
+                }
+            }
+            // Start at max along last row and last column
+            else if (alignment === "dovetail") {
+                for (var i = 0; i < matrix[matrix.length - 1].length; i++) {
+                    console.log(matrix[matrix.length - 1][i]);
+                    if (matrix[matrix.length - 1][i].value > max) {
+                        max = matrix[matrix.length - 1][i].value;
+                        maxI = matrix.length - 1;
+                        maxJ = i;
+                    }
+                }
+
+                for (var i = 0; i < matrix.length - 1; i++) {
+                    console.log(matrix[i][matrix[i].length - 1]);
+                    if (matrix[i][matrix[i].length - 1].value > max) {
+                        max = matrix[i][matrix[i].length - 1].value;
                         maxI = i;
-                        maxJ = j;
+                        maxJ = matrix[i].length - 1;
                     }
                 }
             }
@@ -393,19 +494,19 @@
                     break;
                 }
             }
-            
-            while(seq1 >= 0){
+
+            while (seq1 >= 0) {
                 $scope.alignment[0].push($scope.sequence1.charAt(seq1--));
                 $scope.alignment[1].push(' ');
                 $scope.alignment[2].push(' ');
             }
-            while(seq2 >= 0){
+            while (seq2 >= 0) {
                 $scope.alignment[2].push($scope.sequence2.charAt(seq2--));
                 $scope.alignment[1].push(' ');
                 $scope.alignment[0].push(' ');
             }
-            
-            
+
+
 
             $scope.alignment[0].reverse();
             $scope.alignment[1].reverse();

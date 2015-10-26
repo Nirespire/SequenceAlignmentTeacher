@@ -2,9 +2,9 @@
     <div class="row well">
         <form class="form-inline">
             <label for="sequence1">Sequence 1</label>
-            <input id="sequence1" class="form-control" type="text" ng-model="sequence1"></input>
+            <input id="sequence1" class="form-control" type="text" ng-model="sequence1" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
             <label for="sequence2">Sequence 2</label>
-            <input id="sequence2" class="form-control" type="text" ng-model="sequence2"></input>
+            <input id="sequence2" class="form-control" type="text" ng-model="sequence2" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
         </form>
     </div>
 
@@ -41,12 +41,9 @@
                             <input type="radio" name="scoringMethod" id="editDistance" value="editDistance" ng-model="scoringMethod"> Edit Distance
                         </label>
                     </div>
+
                     <div class="form-inline">
-                        Match =
-                        <input id="matchScore" class="form-control" type="number" ng-model="edMatchScore" ng-disabled="scoringMethod!='editDistance'"></input>
-                    </div>
-                    <div class="form-inline">
-                        Mismatch =
+                        Penalty =
                         <input id="mismatchScore" class="form-control" type="number" ng-model="edMismatchScore" ng-disabled="scoringMethod!='editDistance'"></input>
                     </div>
 
@@ -77,6 +74,12 @@
                             <input type="radio" name="scoringMethod" id="blosum45" value="blosum45" ng-model="scoringMethod"> BLOSUM45
                         </label>
                     </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="scoringMethod" id="blosum62" value="blosum62" ng-model="scoringMethod"> BLOSUM62
+                        </label>
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="form-inline">
@@ -96,14 +99,14 @@
 
                 <div class="form-group">
                     <div class="form-inline">
-                        Show Traceback Arrows: 
+                        Show Traceback Arrows:
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="showArrows" id="showArrows" ng-model="showArrows">
                             </label>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="form-inline">
@@ -148,14 +151,14 @@
 
             <!-- Debug -->
             <div class="row">
-                
+
                 <table class="wikitable">
                     <tr ng-repeat="row in alignment">
                         <td ng-repeat="cell in row track by $index"> <b>{{cell}}</b></td>
                     </tr>
                 </table>
-                
-                
+
+
                 Sequence 1 :
                 <h4>{{sequence1}}</h4> Sequence 2 :
                 <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
