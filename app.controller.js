@@ -11,8 +11,10 @@
 
         function activate() {
             console.log("vmApp here");
-            
+
         }
+
+
 
         $scope.aminoCharCodes = [65, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 89];
 
@@ -90,7 +92,7 @@
                 [-1, 0, 0, 1, -3, 3, 4, -2, 0, -3, -3, 1, -1, -3, -1, 0, -1, -3, -2, -2, 1, 4, -1],
                 [0, -1, -1, -1, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, 0, 0, -2, -1, -1, -1, -1, -1]
             ];
-            
+
             console.log(blosum.length);
             blosum.forEach(function (i) {
                 console.log(i.length);

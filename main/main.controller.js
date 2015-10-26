@@ -5,8 +5,47 @@
         .module('seqalign.main')
         .controller('mainCtrl', main);
 
-    function main($scope, $) {
+    function main($scope, $, $uibModal) {
         var vmMain = this;
+
+        $scope.animationsEnabled = true;
+
+        $scope.open = function(subject) {
+            var templateUrl;
+            
+            switch(subject){
+                case "alignmentMethod":
+                    templateUrl = 'modal/aboutAlignmentMethod.html';
+                    break;
+                    
+                case "scoringMethod":
+                    templateUrl = 'modal/aboutScoringMethod.html';
+                    break;
+                
+                case "blosum":
+                    templateUrl = 'modal/aboutBlosum.html';
+                    break;
+                    
+            }
+            
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: templateUrl,
+                controller: 'modalCtrl'
+            });
+
+            modalInstance.result.then(function (selectedItem) {
+
+            }, function () {
+                console.log('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.close = function(){
+            $uibModal.close();
+        }
+
+
         activate();
 
         function activate() {
@@ -22,13 +61,24 @@
 
             $scope.scoreMatchScore = 1;
             $scope.scoreMismatchScore = -1;
-            $scope.scoreDeleteScore = -2;
-            $scope.scoreInsertScore = -2;
+            $scope.scoreInDelScore = -2;
 
             $scope.blossum45MismatchScore = -5;
             $scope.blossum62MismatchScore = -4;
 
             $scope.showArrows = true;
+
+            $('#alignmentPopover').popover({
+                trigger: "hover"
+            });
+            
+            $('#scoringPopover').popover({
+                trigger: "hover"
+            });
+            
+             $('#blosumPopover').popover({
+                trigger: "hover"
+            });
 
         }
 
@@ -196,7 +246,7 @@
                     break;
 
                 case "score":
-                    mismatchScore = $scope.scoreMismatchScore;
+                    mismatchScore = $scope.scoreInDelScore;
                     break;
 
                 case "blosum45":
@@ -222,43 +272,38 @@
 
 
             // determine what scoring method will be used
-            var mismatch, match, insert, del;
+            var mismatch, match, indel;
             switch ($scope.scoringMethod) {
 
             case "editDistance":
                 mismatch = $scope.edMismatchScore;
-                insert = $scope.edMismatchScore;
-                del = $scope.edMismatchScore;
+                indel = $scope.edMismatchScore;
                 match = $scope.edMatchScore;
 
                 break;
 
             case "score":
                 mismatch = $scope.scoreMismatchScore;
-                insert = $scope.scoreInsertScore;
-                del = $scope.scoreDeleteScore;
+                indel = $scope.scoreInDelScore;
                 match = $scope.scoreMatchScore;
                 break;
 
             case "blosum45":
                 mismatch = $scope.blossum45MismatchScore;
-                insert = $scope.blossum45MismatchScore;
-                del = $scope.blossum45MismatchScore;
+                indel = $scope.blossum45MismatchScore;
                 match = $scope.blosum45;
                 break;
 
             case "blosum62":
                 mismatch = $scope.blossum62MismatchScore;
-                insert = $scope.blossum62MismatchScore;
-                del = $scope.blossum62MismatchScore;
+                indel = $scope.blossum62MismatchScore;
                 match = $scope.blosum62;
                 break;
 
                 // use Edit Distance is some error happens
             default:
                 mismatch = $scope.edMismatchScore;
-                insert = $scope.edMismatchScore;
-                del = $scope.edMismatchScore;
+                indel = $scope.edMismatchScore;
                 match = $scope.edMatchScore;
                 break;
 
@@ -267,7 +312,7 @@
             console.log("run");
 
             // run Needleman-Wunsch with provided params
-            $scope.nw(mismatch, match, insert, del, $scope.subMatrix, $scope.scoringMethod, $scope.alignmentMethod);
+            $scope.nw(mismatch, match, indel, $scope.subMatrix, $scope.scoringMethod, $scope.alignmentMethod);
 
             // draw the traceback from the computed matrix
             if ($scope.alignmentMethod === "global") {
@@ -276,18 +321,20 @@
                 $scope.drawTracebackLocal($scope.subMatrix, "local");
             } else if ($scope.alignmentMethod === "dovetail") {
                 $scope.drawTracebackLocal($scope.subMatrix, "dovetail");
+            } else if ($scope.alignmentMethod === "pattern") {
+                $scope.drawTracebackLocal($scope.subMatrix, "pattern");
             }
         }
 
-        $scope.nwLocal = function (mismatch, match, insert, del, matrix, scoring) {
+        $scope.nwLocal = function (mismatch, match, indel, matrix, scoring) {
             for (var i = 1; i < matrix.length; i++) {
                 for (var j = 1; j < matrix[i].length; j++) {
                     var up, left, diag, restart;
 
                     restart = 0;
 
-                    up = matrix[i - 1][j].value + insert;
-                    left = matrix[i][j - 1].value + del;
+                    up = matrix[i - 1][j].value + indel;
+                    left = matrix[i][j - 1].value + indel;
 
                     // Diagonal scores are not constant
                     if (scoring === "blosum45" || scoring === "blosum62") {
@@ -340,10 +387,10 @@
         }
 
 
-        $scope.nw = function (mismatch, match, insert, del, matrix, scoring, alignment) {
+        $scope.nw = function (mismatch, match, indel, matrix, scoring, alignment) {
 
             if (alignment === "local") {
-                return $scope.nwLocal(mismatch, match, insert, del, matrix, scoring);
+                return $scope.nwLocal(mismatch, match, indel, matrix, scoring);
             }
 
             for (var i = 1; i < matrix.length; i++) {
@@ -351,8 +398,8 @@
 
                     var up, left, diag;
 
-                    up = matrix[i - 1][j].value + insert;
-                    left = matrix[i][j - 1].value + del;
+                    up = matrix[i - 1][j].value + indel;
+                    left = matrix[i][j - 1].value + indel;
 
                     // Diagonal scores are not constant
                     if (scoring === "blosum45" || scoring === "blosum62") {
@@ -417,6 +464,7 @@
             }
             // Start at max along last row and last column
             else if (alignment === "dovetail") {
+                // last row
                 for (var i = 0; i < matrix[matrix.length - 1].length; i++) {
                     console.log(matrix[matrix.length - 1][i]);
                     if (matrix[matrix.length - 1][i].value > max) {
@@ -425,13 +473,25 @@
                         maxJ = i;
                     }
                 }
-
+                // last column
                 for (var i = 0; i < matrix.length - 1; i++) {
                     console.log(matrix[i][matrix[i].length - 1]);
                     if (matrix[i][matrix[i].length - 1].value > max) {
                         max = matrix[i][matrix[i].length - 1].value;
                         maxI = i;
                         maxJ = matrix[i].length - 1;
+                    }
+                }
+            }
+            // Find max value along last row
+            else if (alignment === "pattern") {
+                // last row
+                for (var i = 0; i < matrix[matrix.length - 1].length; i++) {
+                    console.log(matrix[matrix.length - 1][i]);
+                    if (matrix[matrix.length - 1][i].value > max) {
+                        max = matrix[matrix.length - 1][i].value;
+                        maxI = matrix.length - 1;
+                        maxJ = i;
                     }
                 }
             }

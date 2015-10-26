@@ -4,7 +4,9 @@
     angular.module('seqalign', [
         'ui.router',
         'seqalign.main',
-        'seqalign.about'
+        'seqalign.about',
+        'ui.bootstrap',
+        'seqalign.modal'
     ]);
 
     angular.module('seqalign')

@@ -1,18 +1,35 @@
 <div class="container" style="width:90%" ng-controller="mainCtrl">
     <div class="row well">
-        <form class="form-inline">
-            <label for="sequence1">Sequence 1</label>
-            <input id="sequence1" class="form-control" type="text" ng-model="sequence1" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
-            <label for="sequence2">Sequence 2</label>
-            <input id="sequence2" class="form-control" type="text" ng-model="sequence2" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
-        </form>
+
+        <div class="col col-xs-3">
+            <form class="form-inline">
+                <label for="sequence1">Sequence 1</label>
+                <input id="sequence1" class="form-control" type="text" ng-model="sequence1" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
+            </form>
+            <span style="color:red" ng-show="alignmentMethod === 'pattern'"> (Shorter Pattern)</span>
+        </div>
+
+        <div class="col col-xs-3">
+            <form class="form-inline">
+                <label for="sequence2">Sequence 2</label>
+                <input id="sequence2" class="form-control" type="text" ng-model="sequence2" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
+            </form>
+            <span style="color:red" ng-show="alignmentMethod === 'pattern'"> (Longer Sequence)</span>
+        </div>
+
+
+
     </div>
 
     <div class="row">
         <div class="col-xs-3 well">
             <form>
                 <div class="form-group">
-                    <h3>Alignment Method</h3>
+                    <h3>
+                        Alignment Method
+                        <a ng-click="open('alignmentMethod')" id="alignmentPopover" rel="popover" data-placement="bottom" data-original-title="Alignment Method" class="glyphicon glyphicon-question-sign"></a>
+                        
+                    </h3>
                     <div class="radio">
                         <label>
                             <input type="radio" name="alignmentMethod" id="global" value="global" ng-model="alignmentMethod"> Global
@@ -35,7 +52,10 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <h3>Scoring Method</h3>
+                    <h3>
+                        Scoring Method
+                        <a ng-click="open('scoringMethod')" id="scoringPopover" rel="popover" data-placement="bottom" data-original-title="Scoring Method" class="glyphicon glyphicon-question-sign"></a>
+                    </h3>
                     <div class="radio">
                         <label>
                             <input type="radio" name="scoringMethod" id="editDistance" value="editDistance" ng-model="scoringMethod"> Edit Distance
@@ -61,17 +81,15 @@
                         <input id="mismatchScore" class="form-control" type="number" ng-model="scoreMismatchScore" ng-disabled="scoringMethod!='score'"></input>
                     </div>
                     <div class="form-inline">
-                        Insert =
-                        <input id="insertScore" class="form-control" type="number" ng-model="scoreInsertScore" ng-disabled="scoringMethod!='score'"></input>
-                    </div>
-                    <div class="form-inline">
-                        Delete =
-                        <input id="deleteScore" class="form-control" type="number" ng-model="scoreDeleteScore" ng-disabled="scoringMethod!='score'"></input>
+                        Insert/Delete =
+                        <input id="inDelScore" class="form-control" type="number" ng-model="scoreInDelScore" ng-disabled="scoringMethod!='score'"></input>
                     </div>
 
                     <div class="radio">
                         <label>
                             <input type="radio" name="scoringMethod" id="blosum45" value="blosum45" ng-model="scoringMethod"> BLOSUM45
+                            <a ng-click="open('blosum')" id="blosumPopover" rel="popover" data-placement="bottom" data-original-title="BLOSUM" class="glyphicon glyphicon-question-sign"></a>
+
                         </label>
                     </div>
 
@@ -159,21 +177,21 @@
                 </table>
 
 
+                <!--
                 Sequence 1 :
                 <h4>{{sequence1}}</h4> Sequence 2 :
                 <h4>{{sequence2}}</h4> Alignment Method : {{alignmentMethod}}
                 <br> Scoring Method : {{scoringMethod}}
-                <br> ED Match Score : {{edMatchScore}}
                 <br> ED Mismatch Score :{{edMismatchScore}}
                 <br> Score Match Score : {{scoreMatchScore}}
                 <br> Score Mismatch Score : {{scoreMismatchScore}}
-                <br> Score Insert Score : {{scoreInsertScore}}
-                <br> Score Delete Score : {{scoreDeleteScore}}
+                <br> Score InDel Score : {{scoreInDelScore}}
                 <br> Banded ? {{banded}}
                 <br> k = {{k}}
                 <br> matrix = {{matrix}}
                 <br> subMatrix = {{subMatrix}}
                 <br> alignment = {{alignment}}
+                -->
             </div>
 
 
