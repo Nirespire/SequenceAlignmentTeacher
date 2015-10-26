@@ -30,9 +30,6 @@
 
             $scope.showArrows = true;
 
-            console.log($scope.blosum62('A', 'B'));
-
-
         }
 
         // Restrict inputs to only be valid bases
@@ -48,9 +45,14 @@
 
         // onClick the Initialize button
         $scope.initialize = function () {
+            console.log("initialize");
 
+            // Clear any previous info
+            $scope.matrix = null;
+            $scope.alignment = [[], [], []];
+
+            // Make sure inputs are provided
             if ($scope.sequence1 === undefined || $scope.sequence1.length == 0) {
-
 
                 $("#sequence1").tooltip({
 
@@ -93,7 +95,7 @@
                     opacity: 0.7
 
                 });
-                
+
                 $("#sequence2").tooltip("enable");
                 $("#sequence2").focus();
 
@@ -104,10 +106,6 @@
 
             $scope.sequence1 = $scope.sequence1.toUpperCase();
             $scope.sequence2 = $scope.sequence2.toUpperCase();
-
-            $scope.alignment = [[], [], []];
-
-            console.log("initialize");
 
             // construct correct sized matrix
             $scope.matrix = new Array($scope.sequence1.length + 2);
@@ -140,7 +138,7 @@
                 }
             }
 
-            //disable top left corner
+            // Disable top left corner
             $scope.matrix[0][0] = {
                 value: '',
                 type: 'blank'
@@ -157,7 +155,6 @@
             console.log($scope.matrix);
 
             $scope.initSubmatrix();
-
 
         }
 
