@@ -1,9 +1,29 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title">Alignment Method</h4>
+        <h1 class="modal-title">Alignment Methods</h1>
     </div>
     <div class="modal-body">
-        <p>Some text in the modal.</p>
+
+        <h4>Global</h4>
+        <ul>
+            <li>aligns the entire sequence; align all positions in sequence 1 with sequence 2, there will be mismatches, suitable for similar sequences</li>
+        </ul>
+
+        <h4>Local</h4>
+        <ul>
+            <li>align 2 subsequences; align substrings of each sequence instead of the whole sequence to find highly similar regions</li>
+        </ul>
+        
+        <h4>Pattern</h4>
+        <ul>
+            <li>align a complete sequence to a subsequence of another sequence</li>
+        </ul>
+        
+        <h4>Dovetail</h4>
+        <ul>
+            <li>align opposite ends of sequences; aligns prefix of one sequence with the suffix other sequence</li>
+        </ul>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>

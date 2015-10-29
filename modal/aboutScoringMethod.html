@@ -1,9 +1,20 @@
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title">Scoring Method</h4>
+        <h1 class="modal-title">Scoring Methods</h1>
     </div>
     <div class="modal-body">
-        <p>Some text in the modal.</p>
+        <h4>Edit Distance</h4>
+        <ul>
+            <li>Minimum number of operators/mutations (insert, delete, replace) required to transform one sequence into the other</li>
+            <li>penalty = amount “paid” per mismatch</li>
+        </ul>
+        
+        <h4>Score</h4>
+        <ul>
+            <li>match = penalty when the matched letters in the sequence are same, must be 0 or positive</li>
+            <li>mismatch = penalty when the matched letters in the sequence are not same</li>
+            <li>insert/delete = penalty to insert a letter from one sequence to the other sequence or delete a letter from one sequence</li>
+        </ul>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>

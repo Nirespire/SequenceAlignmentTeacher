@@ -10,24 +10,25 @@
 
         $scope.animationsEnabled = true;
 
-        $scope.open = function(subject) {
+        $scope.open = function (subject) {
             var templateUrl;
-            
-            switch(subject){
-                case "alignmentMethod":
-                    templateUrl = 'modal/aboutAlignmentMethod.html';
-                    break;
-                    
-                case "scoringMethod":
-                    templateUrl = 'modal/aboutScoringMethod.html';
-                    break;
-                
-                case "blosum":
-                    templateUrl = 'modal/aboutBlosum.html';
-                    break;
-                    
+            console.log(subject);
+
+            switch (subject) {
+            case "alignmentMethod":
+                templateUrl = 'modal/aboutAlignmentMethod.html?bust=' + Math.random().toString(36).slice(2);
+                break;
+
+            case "scoringMethod":
+                templateUrl = 'modal/aboutScoringMethod.html?bust=' + Math.random().toString(36).slice(2);
+                break;
+
+            case "blosum":
+                templateUrl = 'modal/aboutBlosum.html?bust=' + Math.random().toString(36).slice(2);
+                break;
+
             }
-            
+
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
                 templateUrl: templateUrl,
@@ -41,7 +42,7 @@
             });
         };
 
-        $scope.close = function(){
+        $scope.close = function () {
             $uibModal.close();
         }
 
@@ -68,17 +69,42 @@
 
             $scope.showArrows = true;
 
+            // Initialize popover info boxes over question mark icons
             $('#alignmentPopover').popover({
-                trigger: "hover"
+                trigger: "hover",
+                html: true,
+                content: "The method by which both sequences will be aligned. Click to learn more."
             });
-            
+
             $('#scoringPopover').popover({
-                trigger: "hover"
+                trigger: "hover",
+                html: true,
+                content: "How the quality of the alignment will be evaluated. Click to learn more."
+            });
+
+            $('#blosumPopover').popover({
+                trigger: "hover",
+                html: true,
+                content: "Click here to learn more about he BLOSUM family of scoring matrices and how they are created."
             });
             
-             $('#blosumPopover').popover({
-                trigger: "hover"
-            });
+            
+            // Prevent inputs of characters that are not amino acids
+            var validateInput = function (e) {
+                // Char codes for all valid amino chars
+                if ($.inArray(e.keyCode, [65,66,67,68,69,70,71,72,73,74,75,76,77,78,80,81,82,83,84,86,87,77,89,90]) !== -1 ||
+                   $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                else{
+                    e.preventDefault();
+                }
+            }
+
+
+            $("#sequence1").keydown(validateInput);
+            $("#sequence2").keydown(validateInput);
 
         }
 
@@ -154,8 +180,9 @@
 
             $("#sequence2").tooltip('disable');
 
-            $scope.sequence1 = $scope.sequence1.toUpperCase();
-            $scope.sequence2 = $scope.sequence2.toUpperCase();
+            $scope.sequence1 = $scope.sequence1.toUpperCase().trim();
+            $scope.sequence2 = $scope.sequence2.toUpperCase().trim();
+
 
             // construct correct sized matrix
             $scope.matrix = new Array($scope.sequence1.length + 2);

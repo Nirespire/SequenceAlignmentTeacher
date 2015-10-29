@@ -19,6 +19,7 @@
         $scope.aminoCharCodes = [65, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 89];
 
         $scope.aminoBases = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'J', 'Z', 'X'];
+        
 
 
         $scope.blosum45 = function (one, two) {
