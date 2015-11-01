@@ -87,17 +87,16 @@
                 html: true,
                 content: "Click here to learn more about he BLOSUM family of scoring matrices and how they are created."
             });
-            
-            
+
+
             // Prevent inputs of characters that are not amino acids
             var validateInput = function (e) {
                 // Char codes for all valid amino chars
-                if ($.inArray(e.keyCode, [65,66,67,68,69,70,71,72,73,74,75,76,77,78,80,81,82,83,84,86,87,77,89,90]) !== -1 ||
-                   $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1) {
+                if ($.inArray(e.keyCode, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 77, 89, 90]) !== -1 ||
+                    $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1) {
                     // let it happen, don't do anything
                     return;
-                }
-                else{
+                } else {
                     e.preventDefault();
                 }
             }
@@ -344,8 +343,11 @@
             // draw the traceback from the computed matrix
             if ($scope.alignmentMethod === "global") {
                 $scope.drawTraceback($scope.subMatrix);
+                $scope.createAlignment($scope.subMatrix);
             } else if ($scope.alignmentMethod === "local") {
                 $scope.drawTracebackLocal($scope.subMatrix, "local");
+//                var iandj = $scope.drawTracebackLocal2($scope.subMatrix, "local");
+//                $scope.createAlignmentLocal($scope.subMatrix, iandj[0], iandj[1]);
             } else if ($scope.alignmentMethod === "dovetail") {
                 $scope.drawTracebackLocal($scope.subMatrix, "dovetail");
             } else if ($scope.alignmentMethod === "pattern") {
@@ -470,6 +472,152 @@
                     }
                 }
             }
+        }
+
+        $scope.drawTracebackLocal2 = function (matrix, alignment) {
+            var max = -9999999;
+            var maxI = -1;
+            var maxJ = -1;
+
+            // Start at max of whole matrix
+            if (alignment === "local") {
+                for (var i = 1; i < matrix.length; i++) {
+                    for (var j = 1; j < matrix[i].length; j++) {
+                        if (matrix[i][j].value > max) {
+                            max = matrix[i][j].value;
+                            maxI = i;
+                            maxJ = j;
+                        }
+                    }
+                }
+            }
+            // Start at max along last row and last column
+            else if (alignment === "dovetail") {
+                // last row
+                for (var i = 0; i < matrix[matrix.length - 1].length; i++) {
+                    console.log(matrix[matrix.length - 1][i]);
+                    if (matrix[matrix.length - 1][i].value > max) {
+                        max = matrix[matrix.length - 1][i].value;
+                        maxI = matrix.length - 1;
+                        maxJ = i;
+                    }
+                }
+                // last column
+                for (var i = 0; i < matrix.length - 1; i++) {
+                    console.log(matrix[i][matrix[i].length - 1]);
+                    if (matrix[i][matrix[i].length - 1].value > max) {
+                        max = matrix[i][matrix[i].length - 1].value;
+                        maxI = i;
+                        maxJ = matrix[i].length - 1;
+                    }
+                }
+            }
+            // Find max value along last row
+            else if (alignment === "pattern") {
+                // last row
+                for (var i = 0; i < matrix[matrix.length - 1].length; i++) {
+                    console.log(matrix[matrix.length - 1][i]);
+                    if (matrix[matrix.length - 1][i].value > max) {
+                        max = matrix[matrix.length - 1][i].value;
+                        maxI = matrix.length - 1;
+                        maxJ = i;
+                    }
+                }
+            }
+
+            var i = maxI;
+            var j = maxJ;
+
+            while (true) {
+                matrix[i][j].color = 'lightpink';
+
+                if (matrix[i][j].diag) {
+                    j--;
+                    i--;
+
+                } else if (matrix[i][j].left) {
+                    j--;
+
+                } else if (matrix[i][j].up) {
+                    i--;
+
+                } else {
+                    break;
+                }
+            }
+
+            return [i, j]
+        }
+
+        $scope.createAlignmentLocal = function (matrix, i, j) {
+            var seq1Front = 0;
+            var seq2Front = 0;
+            
+            
+            if(i > j){
+                while(seq1Front < j+1){
+                    $scope.alignment[0].push($scope.sequence1.charAt(seq1Front++));
+                }
+            }
+            else if(i < j){
+                while(seq2Front < i+1){
+                    $scope.alignment[2].push($scope.sequence2.charAt(seq2Front++));
+                }
+            }
+            
+            
+
+            while (seq1Front !== i) {
+                $scope.alignment[0].push($scope.sequence1.charAt(seq1Front++));
+                $scope.alignment[1].push(' ');
+            }
+
+            while (seq2Front !== j) {
+                $scope.alignment[2].push($scope.sequence2.charAt(seq2Front++));
+                $scope.alignment[1].push(' ');
+            }
+
+            var seq1 = i;
+            var seq2 = j;
+
+            while (matrix[i][j].color === 'lightpink') {
+                if (matrix[i + 1][j + 1].color === 'lightpink') {
+
+                    if ($scope.sequence1.charAt(seq1) === $scope.sequence2.charAt(seq2)) {
+                        $scope.alignment[1].push('|');
+                    } else {
+                        $scope.alignment[1].push('r');
+                    }
+
+                    $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
+                    $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
+
+                    i++;
+                    j++;
+                    
+                } else if (matrix[i + 1][j].color === 'lightpink') {
+
+                    $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
+                    $scope.alignment[1].push('i');
+                    $scope.alignment[2].push(' ');
+                    
+                    i++
+                    
+                } else if (matrix[i][j + 1].color === 'lightpink') {
+                    
+                    $scope.alignment[0].push(' ');
+                    $scope.alignment[1].push('d');
+                    $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
+
+                    j++
+                }
+                else{
+                    break;
+                }
+            }
+
+
+
         }
 
         $scope.drawTracebackLocal = function (matrix, alignment) {
@@ -597,12 +745,10 @@
             $scope.alignment[2].reverse();
         }
 
-
         // input should be submatrix of scores
-        // Color traceback cells red
+        // color traceback cells red
         // create alignment display
         $scope.drawTraceback = function (matrix) {
-
             var seq1 = 0;
             var seq2 = 0;
 
@@ -621,6 +767,30 @@
                     j--;
                     i--;
 
+                } else if (matrix[i][j].left) {
+                    j--;
+
+                } else if (matrix[i][j].up) {
+                    i--;
+
+                } else if (i == 0 && j >= 0) {
+                    j--;
+
+                } else if (j == 0 && i >= 0) {
+                    i--;
+                }
+            }
+        }
+
+        $scope.createAlignment = function (matrix) {
+            var i = 0;
+            var j = 0;
+
+            var seq1 = 0;
+            var seq2 = 0;
+
+            while (i != matrix.length - 1 && j != matrix[i].length - 1) {
+                if (matrix[i + 1][j + 1] !== undefined && matrix[i + 1][j + 1].color === 'lightpink') {
                     if ($scope.sequence1.charAt(seq1) === $scope.sequence2.charAt(seq2)) {
                         $scope.alignment[1].push('|');
                     } else {
@@ -630,38 +800,24 @@
                     $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
                     $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
 
+                    i++;
+                    j++;
+                } else if (matrix[i + 1][j] !== undefined && matrix[i + 1][j].color === 'lightpink') {
 
-                } else if (matrix[i][j].left) {
-                    j--;
+                    $scope.alignment[1].push('i');
+                    $scope.alignment[2].push(' ');
+                    $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
 
+
+                    i++;
+                } else if (matrix[i][j + 1] !== undefined && matrix[i][j + 1].color === 'lightpink') {
                     $scope.alignment[1].push('d')
                     $scope.alignment[0].push(' ');
                     $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
 
-
-                } else if (matrix[i][j].up) {
-                    i--;
-
-                    $scope.alignment[1].push('i')
-                    $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
-                    $scope.alignment[2].push(' ');
-
-                } else if (i == 0 && j >= 0) {
-                    j--;
-                    $scope.alignment[1].push('d')
-                    $scope.alignment[0].push(' ');
-                    $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
-                } else if (j == 0 && i >= 0) {
-                    i--;
-                    $scope.alignment[1].push('i')
-                    $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
-                    $scope.alignment[2].push(' ');
+                    j++;
                 }
             }
-
-            $scope.alignment[0].pop();
-            $scope.alignment[1].pop();
-            $scope.alignment[2].pop();
         }
 
         // shallow copy out score part of full matrix for use in NW
