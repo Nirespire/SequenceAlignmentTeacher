@@ -371,8 +371,8 @@
 
             // draw the traceback from the computed matrix
             if ($scope.alignmentMethod === "global") {
-                //$scope.drawTraceback($scope.subMatrix);
-                //$scope.createAlignment($scope.subMatrix);
+                $scope.drawTraceback($scope.subMatrix);
+                $scope.createAlignment($scope.subMatrix);
             } else if ($scope.alignmentMethod === "local") {
                 $scope.drawTracebackLocal($scope.subMatrix, "local");
                 //                var iandj = $scope.drawTracebackLocal2($scope.subMatrix, "local");
