@@ -27,6 +27,13 @@
                 templateUrl = 'modal/aboutBlosum.html?bust=' + Math.random().toString(36).slice(2);
                 break;
 
+            case "matrix":
+                templateUrl = 'modal/aboutAlignmentMatrix.html?bust=' + Math.random().toString(36).slice(2);
+                break;
+
+            case "alignmentResult":
+                templateUrl = 'modal/aboutAlignment.html?bust=' + Math.random().toString(36).slice(2);
+                break;
             }
 
             var modalInstance = $uibModal.open({
@@ -86,6 +93,18 @@
                 trigger: "hover",
                 html: true,
                 content: "Click here to learn more about he BLOSUM family of scoring matrices and how they are created."
+            });
+            
+            $('#matrixPopover').popover({
+                trigger: "hover",
+                html: true,
+                content: "Click here to learn more about Needleman-Wunsch Dynamic Programming matrices."
+            });
+            
+            $('#alignmentResultPopover').popover({
+                trigger: "hover",
+                html: true,
+                content: "Click here to learn more about sequence alignment results."
             });
 
 
@@ -248,12 +267,12 @@
             // Insert zeroes initially
             for (var i = 1; i < $scope.matrix.length; i++) {
                 for (var j = 1; j < $scope.matrix[i].length; j++) {
-                    
+
                     if ($scope.banded && (i > j + $scope.k || j > i + $scope.k)) {
                         $scope.matrix[i][j].type = 'blank';
                         continue;
                     }
-                    
+
                     if (i == 1 && j > 0) {
                         $scope.matrix[i][j].value = 0;
                         $scope.matrix[i][j].type = 'score';
@@ -364,12 +383,12 @@
         $scope.nwLocal = function (mismatch, match, indel, matrix, scoring) {
             for (var i = 1; i < matrix.length; i++) {
                 for (var j = 1; j < matrix[i].length; j++) {
-                    
+
                     if ($scope.banded && (i > j + $scope.k || j > i + $scope.k)) {
                         matrix[i][j].type = 'blank';
                         continue;
                     }
-                    
+
                     var up, left, diag, restart;
 
                     restart = 0;

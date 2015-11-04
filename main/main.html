@@ -136,7 +136,12 @@
         </div>
 
         <div class="col-xs-9" style="padding-left:50px">
-            <h3>Alignment Matrix</h3>
+
+            <h3>
+                Alignment Matrix
+                <a ng-click="open('matrix')" id="matrixPopover" rel="popover" data-placement="bottom" data-original-title="Alignment Matrix" class="glyphicon glyphicon-question-sign"></a>
+            </h3>
+
             <div class="row">
                 <table class="row wikitable">
                     <tr ng-repeat="row in matrix">
@@ -169,7 +174,10 @@
 
             <hr>
 
-            <h3>Alignment</h3>
+            <h3>
+                Alignment Result
+                <a ng-click="open('alignmentResult')" id="alignmentResultPopover" rel="popover" data-placement="bottom" data-original-title="Alignment Result" class="glyphicon glyphicon-question-sign"></a>
+            </h3>
             <div class="row">
                 <table class="wikitable">
                     <tr ng-repeat="row in alignment">
