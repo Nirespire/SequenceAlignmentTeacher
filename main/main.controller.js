@@ -74,6 +74,10 @@
             $scope.blossum45MismatchScore = -5;
             $scope.blossum62MismatchScore = -4;
 
+            $scope.k = 3;
+
+            $scope.Math = window.Math;
+
             $scope.showArrows = true;
 
             // Initialize popover info boxes over question mark icons
@@ -94,13 +98,13 @@
                 html: true,
                 content: "Click here to learn more about he BLOSUM family of scoring matrices and how they are created."
             });
-            
+
             $('#matrixPopover').popover({
                 trigger: "hover",
                 html: true,
                 content: "Click here to learn more about Needleman-Wunsch Dynamic Programming matrices."
             });
-            
+
             $('#alignmentResultPopover').popover({
                 trigger: "hover",
                 html: true,
@@ -367,8 +371,8 @@
 
             // draw the traceback from the computed matrix
             if ($scope.alignmentMethod === "global") {
-                $scope.drawTraceback($scope.subMatrix);
-                $scope.createAlignment($scope.subMatrix);
+                //$scope.drawTraceback($scope.subMatrix);
+                //$scope.createAlignment($scope.subMatrix);
             } else if ($scope.alignmentMethod === "local") {
                 $scope.drawTracebackLocal($scope.subMatrix, "local");
                 //                var iandj = $scope.drawTracebackLocal2($scope.subMatrix, "local");

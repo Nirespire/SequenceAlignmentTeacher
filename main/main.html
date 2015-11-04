@@ -7,6 +7,7 @@
                 <input id="sequence1" class="form-control" type="text" ng-model="sequence1" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
             </form>
             <span style="color:red" ng-show="alignmentMethod === 'pattern'"> (Shorter Pattern)</span>
+            <span style="color:red" ng-show="banded && Math.abs(sequence1.length - sequence2.length) > k">Make sure sequence lengths differ by at most k for banded alignment </span>
         </div>
 
         <div class="col col-xs-3">
@@ -110,6 +111,7 @@
                         k =
                         <input id="k" class="form-control" type="number" style="width:30%" ng-model="k" ng-disabled="!banded"></input>
                     </div>
+                    <span style="color:red" ng-show="k < 0"> K cannot be negative</span>
                     <div class="form-inline">
 
                     </div>
@@ -130,7 +132,7 @@
                 <div class="form-inline">
                     <button class="btn btn-default" ng-click="initialize()">Initialize</button>
                     <button class="btn btn-default" ng-click="check()">Check</button>
-                    <button class="btn btn-default" ng-click="initNW()">Run</button>
+                    <button class="btn btn-default" ng-click="initNW()" ng-disabled="banded && Math.abs(sequence1.length - sequence2.length) > k">Run</button>
                 </div>
             </form>
         </div>
