@@ -93,7 +93,7 @@
             var validateInput = function (e) {
                 // Char codes for all valid amino chars
                 if ($.inArray(e.keyCode, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 77, 89, 90]) !== -1 ||
-                    $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1) {
+                    $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 35, 36, 37, 39]) !== -1) {
                     // let it happen, don't do anything
                     return;
                 } else {
@@ -246,8 +246,14 @@
             $scope.initialize();
 
             // Insert zeroes initially
-            for (var i = 0; i < $scope.matrix.length; i++) {
-                for (var j = 0; j < $scope.matrix[i].length; j++) {
+            for (var i = 1; i < $scope.matrix.length; i++) {
+                for (var j = 1; j < $scope.matrix[i].length; j++) {
+                    
+                    if ($scope.banded && (i > j + $scope.k || j > i + $scope.k)) {
+                        $scope.matrix[i][j].type = 'blank';
+                        continue;
+                    }
+                    
                     if (i == 1 && j > 0) {
                         $scope.matrix[i][j].value = 0;
                         $scope.matrix[i][j].type = 'score';
@@ -346,8 +352,8 @@
                 $scope.createAlignment($scope.subMatrix);
             } else if ($scope.alignmentMethod === "local") {
                 $scope.drawTracebackLocal($scope.subMatrix, "local");
-//                var iandj = $scope.drawTracebackLocal2($scope.subMatrix, "local");
-//                $scope.createAlignmentLocal($scope.subMatrix, iandj[0], iandj[1]);
+                //                var iandj = $scope.drawTracebackLocal2($scope.subMatrix, "local");
+                //                $scope.createAlignmentLocal($scope.subMatrix, iandj[0], iandj[1]);
             } else if ($scope.alignmentMethod === "dovetail") {
                 $scope.drawTracebackLocal($scope.subMatrix, "dovetail");
             } else if ($scope.alignmentMethod === "pattern") {
@@ -358,6 +364,12 @@
         $scope.nwLocal = function (mismatch, match, indel, matrix, scoring) {
             for (var i = 1; i < matrix.length; i++) {
                 for (var j = 1; j < matrix[i].length; j++) {
+                    
+                    if ($scope.banded && (i > j + $scope.k || j > i + $scope.k)) {
+                        matrix[i][j].type = 'blank';
+                        continue;
+                    }
+                    
                     var up, left, diag, restart;
 
                     restart = 0;
@@ -422,8 +434,14 @@
                 return $scope.nwLocal(mismatch, match, indel, matrix, scoring);
             }
 
+
             for (var i = 1; i < matrix.length; i++) {
                 for (var j = 1; j < matrix[i].length; j++) {
+
+                    if ($scope.banded && (i > j + $scope.k || j > i + $scope.k)) {
+                        matrix[i][j].type = 'blank';
+                        continue;
+                    }
 
                     var up, left, diag;
 
@@ -552,20 +570,19 @@
         $scope.createAlignmentLocal = function (matrix, i, j) {
             var seq1Front = 0;
             var seq2Front = 0;
-            
-            
-            if(i > j){
-                while(seq1Front < j+1){
+
+
+            if (i > j) {
+                while (seq1Front < j + 1) {
                     $scope.alignment[0].push($scope.sequence1.charAt(seq1Front++));
                 }
-            }
-            else if(i < j){
-                while(seq2Front < i+1){
+            } else if (i < j) {
+                while (seq2Front < i + 1) {
                     $scope.alignment[2].push($scope.sequence2.charAt(seq2Front++));
                 }
             }
-            
-            
+
+
 
             while (seq1Front !== i) {
                 $scope.alignment[0].push($scope.sequence1.charAt(seq1Front++));
@@ -594,24 +611,23 @@
 
                     i++;
                     j++;
-                    
+
                 } else if (matrix[i + 1][j].color === 'lightpink') {
 
                     $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
                     $scope.alignment[1].push('i');
                     $scope.alignment[2].push(' ');
-                    
+
                     i++
-                    
+
                 } else if (matrix[i][j + 1].color === 'lightpink') {
-                    
+
                     $scope.alignment[0].push(' ');
                     $scope.alignment[1].push('d');
                     $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
 
                     j++
-                }
-                else{
+                } else {
                     break;
                 }
             }

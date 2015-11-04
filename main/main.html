@@ -135,8 +135,8 @@
             </form>
         </div>
 
-        <div class="col-xs-9">
-
+        <div class="col-xs-9" style="padding-left:50px">
+            <h3>Alignment Matrix</h3>
             <div class="row">
                 <table class="row wikitable">
                     <tr ng-repeat="row in matrix">
@@ -167,9 +167,10 @@
                 </table>
             </div>
 
-            <!-- Debug -->
-            <div class="row">
+            <hr>
 
+            <h3>Alignment</h3>
+            <div class="row">
                 <table class="wikitable">
                     <tr ng-repeat="row in alignment">
                         <td ng-repeat="cell in row track by $index"> <b>{{cell}}</b></td>
