@@ -112,6 +112,7 @@
                         <input id="k" class="form-control" type="number" style="width:30%" ng-model="k" ng-disabled="!banded"></input>
                     </div>
                     <span style="color:red" ng-show="k < 0"> K cannot be negative</span>
+                    <span style="color:red" ng-show="k < 3"> K must be > 3</span>
                     <div class="form-inline">
 
                     </div>
@@ -132,7 +133,7 @@
                 <div class="form-inline">
                     <button class="btn btn-default" ng-click="initialize()">Initialize</button>
                     <button class="btn btn-default" ng-click="check()">Check</button>
-                    <button class="btn btn-default" ng-click="initNW()" ng-disabled="banded && Math.abs(sequence1.length - sequence2.length) >= k-1">Run</button>
+                    <button class="btn btn-default" ng-click="initNW()" ng-disabled="banded && Math.abs(sequence1.length - sequence2.length) >= k-1 && k > 3">Run</button>
                 </div>
             </form>
         </div>

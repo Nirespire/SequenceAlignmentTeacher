@@ -115,7 +115,7 @@
             // Prevent inputs of characters that are not amino acids
             var validateInput = function (e) {
                 // Char codes for all valid amino chars
-                if ($.inArray(e.keyCode, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 77, 89, 90]) !== -1 ||
+                if ($.inArray(e.keyCode, [65, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 80, 81, 82, 83, 84, 86, 87, 77, 89]) !== -1 ||
                     $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 35, 36, 37, 39]) !== -1) {
                     // let it happen, don't do anything
                     return;
