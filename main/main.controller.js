@@ -79,7 +79,7 @@
             $scope.Math = window.Math;
 
             $scope.showArrows = true;
-            
+
             $scope.solved = false;
 
             // Initialize popover info boxes over question mark icons
@@ -141,25 +141,46 @@
                 return false;
             }
         };
-        
+
         // Dynamically creates a tooltip for each matrix entry
-        $scope.tooltipContent = function(i, j){
-            
+        $scope.tooltipContent = function (i, j) {
+            console.log(i,j);
             var content = "";
-            
-            if($scope.matrix[i][j].color == 'lightpink'){
-                content += "On traceback path";
+
+            if ($scope.matrix[i][j].type === 'score' && i > 1 && j > 1) {
+
+                if ($scope.lastScoringMethod === 'editDistance') {
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j].value + $scope.lastMismatch) + " | ";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i][j - 1].value + $scope.lastMismatch) + " | ";
+                    content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
+
+                    if ($scope.sequence1.charAt(i-2) === $scope.sequence2.charAt(j-2)) {
+                        content += "0 = " +  $scope.matrix[i - 1][j - 1].value +  " because match";
+                    } else {
+                        content += $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
+                    }
+                } else {
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
+                    content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
+
+                    if ($scope.sequence1.charAt(i-2) === $scope.sequence2.charAt(j-2)) {
+                        content += $scope.lastMatch + " = " +  ($scope.matrix[i - 1][j - 1].value + $scope.lastMatch) + " because match";
+                    } else {
+                        content += $scope.lastMismatch + " = " +  ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
+                    }
+                }
             }
-            
-            return content;
-            
+
+            return  content;
+
         }
 
 
         // onClick the Initialize button
         $scope.initialize = function () {
             console.log("initialize");
-            
+
             $scope.solved = false;
 
             // Clear any previous info
@@ -383,6 +404,12 @@
 
             console.log("run");
 
+            $scope.lastAlignmentMethod = $scope.alignmentMethod;
+            $scope.lastScoringMethod = $scope.scoringMethod;
+            $scope.lastMismatch = mismatch;
+            $scope.lastIndel = indel;
+            $scope.lastMatch = match;
+
             // run Needleman-Wunsch with provided params
             $scope.nw(mismatch, match, indel, $scope.subMatrix, $scope.scoringMethod, $scope.alignmentMethod);
 
@@ -399,7 +426,7 @@
             } else if ($scope.alignmentMethod === "pattern") {
                 $scope.drawTracebackLocal($scope.subMatrix, "pattern");
             }
-            
+
             $scope.solved = true;
         }
 
