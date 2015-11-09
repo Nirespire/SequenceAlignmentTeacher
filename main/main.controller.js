@@ -79,6 +79,8 @@
             $scope.Math = window.Math;
 
             $scope.showArrows = true;
+            
+            $scope.solved = false;
 
             // Initialize popover info boxes over question mark icons
             $('#alignmentPopover').popover({
@@ -139,11 +141,26 @@
                 return false;
             }
         };
+        
+        // Dynamically creates a tooltip for each matrix entry
+        $scope.tooltipContent = function(i, j){
+            
+            var content = "";
+            
+            if($scope.matrix[i][j].color == 'lightpink'){
+                content += "On traceback path";
+            }
+            
+            return content;
+            
+        }
 
 
         // onClick the Initialize button
         $scope.initialize = function () {
             console.log("initialize");
+            
+            $scope.solved = false;
 
             // Clear any previous info
             $scope.matrix = null;
@@ -382,6 +399,8 @@
             } else if ($scope.alignmentMethod === "pattern") {
                 $scope.drawTracebackLocal($scope.subMatrix, "pattern");
             }
+            
+            $scope.solved = true;
         }
 
         $scope.nwLocal = function (mismatch, match, indel, matrix, scoring) {
@@ -856,6 +875,18 @@
 
                     j++;
                 }
+            }
+
+            while (seq2 < $scope.sequence2.length) {
+                $scope.alignment[1].push('d')
+                $scope.alignment[0].push(' ');
+                $scope.alignment[2].push($scope.sequence2.charAt(seq2++));
+            }
+
+            while (seq1 < $scope.sequence1.length) {
+                $scope.alignment[1].push('i');
+                $scope.alignment[2].push(' ');
+                $scope.alignment[0].push($scope.sequence1.charAt(seq1++));
             }
         }
 
