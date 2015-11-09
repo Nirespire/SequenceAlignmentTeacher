@@ -79,6 +79,7 @@
             $scope.Math = window.Math;
 
             $scope.showArrows = true;
+            $scope.showPopups = true;
 
             $scope.solved = false;
 

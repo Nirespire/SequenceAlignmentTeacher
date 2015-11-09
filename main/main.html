@@ -130,6 +130,18 @@
 
                 </div>
 
+                <div class="form-group">
+                    <div class="form-inline">
+                        Show Popups:
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="showPopups" id="showPopups" ng-model="showPopups">
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
                 <div class="form-inline">
                     <button class="btn btn-default" ng-click="initialize()">Initialize</button>
                     <button class="btn btn-default" ng-click="check()">Check</button>
@@ -148,7 +160,7 @@
             <div class="row">
                 <table class="row wikitable">
                     <tr ng-repeat="row in matrix">
-                        <td ng-repeat="cell in row track by $index" ng-class="cell.color" tooltip-enable="solved" tooltip-append-to-body="true" tooltip-placement="top" uib-tooltip="{{tooltipContent($parent.$index, $index)}}">
+                        <td ng-repeat="cell in row track by $index" ng-class="cell.color" tooltip-enable="solved && showPopups" tooltip-append-to-body="true" tooltip-placement="top" uib-tooltip="{{tooltipContent($parent.$index, $index)}}">
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-xs-4"><i ng-if="showArrows && cell.diag" class="glyphicon glyphicon-arrow-up rotate-45-left"></i></div>
