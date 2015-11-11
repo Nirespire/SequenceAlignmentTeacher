@@ -34,7 +34,15 @@
             case "alignmentResult":
                 templateUrl = 'modal/aboutAlignment.html?bust=' + Math.random().toString(36).slice(2);
                 break;
+            case "sequences":
+                templateUrl = 'modal/aboutSequences.html?bust=' + Math.random().toString(36).slice(2);
+                break;
+            case "bandedAlignment":
+                templateUrl = 'modal/aboutBandedAlignment.html?bust=' + Math.random().toString(36).slice(2);
+                break;
             }
+
+
 
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
@@ -114,6 +122,18 @@
                 content: "Click here to learn more about sequence alignment results."
             });
 
+            $('#sequencesPopover').popover({
+                trigger: "hover",
+                html: true,
+                content: "Click here to learn more about the input sequences"
+            });
+
+            $('#bandedAlignmentPopover').popover({
+                trigger: "hover",
+                html: true,
+                content: "Click here to learn more about the banded alignment"
+            });
+
 
             // Prevent inputs of characters that are not amino acids
             var validateInput = function (e) {
@@ -145,7 +165,7 @@
 
         // Dynamically creates a tooltip for each matrix entry
         $scope.tooltipContent = function (i, j) {
-            console.log(i,j);
+            console.log(i, j);
             var content = "";
 
             if ($scope.matrix[i][j].type === 'score' && i > 1 && j > 1) {
@@ -155,8 +175,8 @@
                     content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i][j - 1].value + $scope.lastMismatch) + " | ";
                     content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
 
-                    if ($scope.sequence1.charAt(i-2) === $scope.sequence2.charAt(j-2)) {
-                        content += "0 = " +  $scope.matrix[i - 1][j - 1].value +  " because match";
+                    if ($scope.sequence1.charAt(i - 2) === $scope.sequence2.charAt(j - 2)) {
+                        content += "0 = " + $scope.matrix[i - 1][j - 1].value + " because match";
                     } else {
                         content += $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
                     }
@@ -165,15 +185,15 @@
                     content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
                     content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
 
-                    if ($scope.sequence1.charAt(i-2) === $scope.sequence2.charAt(j-2)) {
-                        content += $scope.lastMatch + " = " +  ($scope.matrix[i - 1][j - 1].value + $scope.lastMatch) + " because match";
+                    if ($scope.sequence1.charAt(i - 2) === $scope.sequence2.charAt(j - 2)) {
+                        content += $scope.lastMatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMatch) + " because match";
                     } else {
-                        content += $scope.lastMismatch + " = " +  ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
+                        content += $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
                     }
                 }
             }
 
-            return  content;
+            return content;
 
         }
 
