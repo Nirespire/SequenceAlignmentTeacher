@@ -3,15 +3,17 @@
         <h1 class="modal-title">BLOSUM Matrices</h1>
     </div>
     <div class="modal-body">
-        <h4>BLOSSUM62</h4>
+
         <ul>
-            <li>BLOSUM is a scoring matrix that shows the relationship between ith and jth letters. In the matrix, positive numbers indicate that mutation between the two letters is likely. The magnitude of the number shows the degree of proximity. The BLOSUM matrix is constructed by...</li>
+            <li>BLOSUM-k (BLOcks SUbstitution Matrix) is a scoring matrix that shows the relationship between ith and jth letters. 
+                The matrix is created by clustering similar sequences (where K represents the percentage of sequences that were identical) into one single sequence and then comparing those sequences. 
+                In the matrix, positive numbers indicate that mutation between the two letters is likely. The magnitude of the number shows the degree of proximity.
+            </li>
         </ul>
         
-        <h4>BLOSSUM45</h4>
-        <ul>
-            <li>(BLOcks SUbstitution Matrix) is a scoring matrix for very dissimilar sequences</li>
-        </ul>
+        <img src="img/blosum62.gif" alt="BLOSUM62" class="img-thumbnail">
+        The BLOSUM62 matrix
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>

@@ -382,7 +382,36 @@
                 for (var j = 2; j < $scope.matrix[2].length; j++) {
                     $scope.matrix[1][j].value = $scope.matrix[1][j - 1].value + mismatchScore;
                 }
-            }
+            }  
+//            else if ($scope.alignmentMethod === "pattern") {
+//
+//                var mismatchScore;
+//
+//                switch ($scope.scoringMethod) {
+//
+//                case "editDistance":
+//                    mismatchScore = $scope.edMismatchScore;
+//                    break;
+//
+//                case "score":
+//                    mismatchScore = $scope.scoreInDelScore;
+//                    break;
+//
+//                case "blosum45":
+//                    mismatchScore = $scope.blossum45MismatchScore;
+//                    break;
+//
+//                case "blosum62":
+//                    mismatchScore = $scope.blossum62MismatchScore;
+//                    break;
+//
+//                }
+//
+//                // horizontal first column
+//                for (var j = 2; j < $scope.matrix[2].length; j++) {
+//                    $scope.matrix[1][j].value = $scope.matrix[1][j - 1].value + mismatchScore;
+//                }
+//            }
 
 
             // determine what scoring method will be used
