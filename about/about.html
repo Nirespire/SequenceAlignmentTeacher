@@ -1,70 +1,38 @@
-<div class="container well" style="width:50%" ng-controller="aboutCtrl">
+<div class="container well" ng-controller="infoCtrl">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">About this Application</h1>
+            <p>This application was developed as the final project requirement for Dr. Tamer Kahvechi's Bioinformatics during Fall of 2015 at the University of Florida.</p>
+        </div>
+    </div>
+    
 
-    <section>
-        <h1>FAQ</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <h2 class="page-header">Team Members</h2>
+        </div>
+        <div class="col-lg-3 col-sm-6 text-center">
+            <img class="img-circle img-responsive img-center" src="http://placehold.it/200x200" alt="">
+            <h3>Omeed Familie</h3>
+            <p>Developer - Android</p>
+        </div>
+        <div class="col-lg-3 col-sm-6 text-center">
+            <img class="img-circle img-responsive img-center" src="http://placehold.it/200x200" alt="">
+            <h3>Sanjay Nair</h3>
+            <p>Developer - Web</p>
+        </div>
+        <div class="col-lg-3 col-sm-6 text-center">
+            <img class="img-circle img-responsive img-center" src="http://placehold.it/200x200" alt="">
+            <h3>Alyson Listhaus</h3>
+            <p>Quality Assurance, User Experience, and Content Research</p>
+        </div>
+        <div class="col-lg-3 col-sm-6 text-center">
+            <img class="img-circle img-responsive img-center" src="http://placehold.it/200x200" alt="">
+            <h3>Karishma Gupta</h3>
+            <p>Quality Assurance, User Experience, and Content Research</p>
+        </div>
+    </div>
 
-        <h4>What is Bioinformatics?</h4>
-        <ul>
-            <li>
-                <a href="http://www.ncbi.nlm.nih.gov/Class/MLACourse/Modules/MolBioReview/bioinformatics.html" target="_blank">Find out here!</a>
-            </li>
-        </ul>
-
-        <h4>What is the National Center for Biotechnology Information?</h4>
-        <ul>
-            <li>
-                <a href="http://www.ncbi.nlm.nih.gov/home/learn.shtml " target="_blank">Find out here!</a>
-            </li>
-        </ul>
-
-        <h4>Sequence Alignment</h4>
-
-        <h5>What is it?</h5>
-
-        <ul>
-            <li>In bioinformatics, a sequence alignment is a way of arranging the sequences of DNA, RNA, or protein to identify regions of similarity that may be a consequence of functional, structural, or evolutionary relationships between the sequences. Aligned sequences of nucleotide or amino acid residues are typically represented as rows within a matrix. Gaps are inserted between the residues so that identical or similar characters are aligned in successive columns. Sequence alignments are also used for non-biological sequences, such as those present in natural language or in financial data.</li>
-            <li><a href="https://en.wikipedia.org/wiki/Sequence_alignment" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h5>Why do we do it?</h5>
-
-
-        <h4>What are pairwise sequence alignment methods?</h4>
-        <ul>
-            <li>Pairwise sequence alignment methods are used to find the best-matching piecewise (local) or global alignments of two query sequences. Pairwise alignments can only be used between two sequences at a time, but they are efficient to calculate and are often used for methods that do not require extreme precision (such as searching a database for sequences with high similarity to a query). The three primary methods of producing pairwise alignments are <b>dot-matrix methods</b>, <b>dynamic programming</b>, and <b>word</b> methods </li>
-            <li><a href="https://en.wikipedia.org/wiki/Sequence_alignment#Pairwise_alignment" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h4>What are dot matrix methods?</h4>
-        <ul>
-            <li>A dot matrix analysis is a method for comparing two sequences to look for possible alignment (Gibbs and McIntyre 1970). One sequence (A) is listed across the top of the matrix and the other (B) is listed down the left side. Starting from the first character in B, one moves across the page keeping in the first row and placing a dot in many column where the character in A is the same. The process is continued until all possible comparisons between A and B are made. Any region of similarity is revealed by a diagonal row of dots. Isolated dots not on diagonal represent random matches.</li>
-            <li><a href="http://www.srmuniv.ac.in/sites/default/files/files/5(6).pdf" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h4>What are word methods?</h4>
-        <ul>
-            <li>Word methods identify a series of short, nonoverlapping subsequences ("words") in the query sequence that are then matched to candidate database sequences. The relative positions of the word in the two sequences being compared are subtracted to obtain an offset; this will indicate a region of alignment if multiple distinct words produce the same offset.</li>
-            <li><a href="https://en.wikipedia.org/wiki/Sequence_alignment#Word_methods" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h4>What is dynamic programming?</h4>
-        <ul>
-            <li>Dynamic programming is a method for solving a complex problem by breaking it down into a collection of simpler subproblems</li>
-            <li><a href="https://en.wikipedia.org/wiki/Dynamic_programming" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h4>What is the Needleman-Wunsch method for sequence alignment?</h4>
-        <ul>
-            <li>Needleman, S. B. and Wunsch, C. D. (1970). A general method applicable to the search for similarities in the amino acid sequence of two proteins. J. Mol. Biol. 48, 443-453.</li>
-            <li><a href="https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm" target="_blank">Find out more here</a></li>
-        </ul>
-
-        <h4>What are some other methods for sequence alignment?</h4>
-        <ul>
-            <li><a href="https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm" target="_blank">Smith-Waterman</a></li>
-            <li><a href="https://en.wikipedia.org/wiki/Levenshtein_distance " target="_blank">Levenshtein Distance</a></li>
-        </ul>
-    </section>
 
 
 </div>

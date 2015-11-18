@@ -4,9 +4,10 @@
     angular.module('seqalign', [
         'ui.router',
         'seqalign.main',
-        'seqalign.about',
+        'seqalign.info',
         'ui.bootstrap',
-        'seqalign.modal'
+        'seqalign.modal',
+        'seqalign.about'
     ]);
 
     angular.module('seqalign')

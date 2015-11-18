@@ -10,6 +10,12 @@
 
         $scope.animationsEnabled = true;
 
+        $scope.$watch("alignmentMethod", function (newValue, oldValue) {
+            if ($scope.alignmentMethod !== 'global' && $scope.scoringMethod === 'editDistance') {
+                $scope.scoringMethod = 'score';
+            }
+        });
+
         $scope.open = function (subject) {
             var templateUrl;
             console.log(subject);
@@ -131,7 +137,7 @@
             $('#bandedAlignmentPopover').popover({
                 trigger: "hover",
                 html: true,
-                content: "Click here to learn more about the banded alignment"
+                content: "Click here to learn more about banded alignment"
             });
 
 
@@ -191,10 +197,21 @@
                         content += $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
                     }
                 }
+            } else if ($scope.matrix[i][j].type === 'score' && i == 1 && j > 1) {
+                if ($scope.lastScoringMethod === 'editDistance') {
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i][j - 1].value + $scope.lastMismatch) + " because delete";
+                } else {
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " because delete";
+                }
+            } else if ($scope.matrix[i][j].type === 'score' && i > 1 && j == 1) {
+                if ($scope.lastScoringMethod === 'editDistance') {
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j].value + $scope.lastMismatch) + " because insert";
+                } else {
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " because insert";
+                }
             }
 
             return content;
-
         }
 
 
@@ -382,36 +399,36 @@
                 for (var j = 2; j < $scope.matrix[2].length; j++) {
                     $scope.matrix[1][j].value = $scope.matrix[1][j - 1].value + mismatchScore;
                 }
-            }  
-//            else if ($scope.alignmentMethod === "pattern") {
-//
-//                var mismatchScore;
-//
-//                switch ($scope.scoringMethod) {
-//
-//                case "editDistance":
-//                    mismatchScore = $scope.edMismatchScore;
-//                    break;
-//
-//                case "score":
-//                    mismatchScore = $scope.scoreInDelScore;
-//                    break;
-//
-//                case "blosum45":
-//                    mismatchScore = $scope.blossum45MismatchScore;
-//                    break;
-//
-//                case "blosum62":
-//                    mismatchScore = $scope.blossum62MismatchScore;
-//                    break;
-//
-//                }
-//
-//                // horizontal first column
-//                for (var j = 2; j < $scope.matrix[2].length; j++) {
-//                    $scope.matrix[1][j].value = $scope.matrix[1][j - 1].value + mismatchScore;
-//                }
-//            }
+            }
+            //            else if ($scope.alignmentMethod === "pattern") {
+            //
+            //                var mismatchScore;
+            //
+            //                switch ($scope.scoringMethod) {
+            //
+            //                case "editDistance":
+            //                    mismatchScore = $scope.edMismatchScore;
+            //                    break;
+            //
+            //                case "score":
+            //                    mismatchScore = $scope.scoreInDelScore;
+            //                    break;
+            //
+            //                case "blosum45":
+            //                    mismatchScore = $scope.blossum45MismatchScore;
+            //                    break;
+            //
+            //                case "blosum62":
+            //                    mismatchScore = $scope.blossum62MismatchScore;
+            //                    break;
+            //
+            //                }
+            //
+            //                // horizontal first column
+            //                for (var j = 2; j < $scope.matrix[2].length; j++) {
+            //                    $scope.matrix[1][j].value = $scope.matrix[1][j - 1].value + mismatchScore;
+            //                }
+            //            }
 
 
             // determine what scoring method will be used
