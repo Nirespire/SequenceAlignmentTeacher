@@ -1,7 +1,11 @@
 <div class="container" style="width:90%" ng-controller="mainCtrl">
     <div class="row well">
 
-        <div class="col col-xs-3">
+        <div class="col-xs-1">
+            <a ng-click="open('start')"><button class="btn btn-info">Start Here</button></a>
+        </div>
+        
+        <div class="col-xs-3">
             <form class="form-inline">
                 <label for="sequence1">Sequence 1</label>
                 <input id="sequence1" class="form-control" type="text" ng-model="sequence1" maxlength="10" ng-keypress="aminoRegex($event)" title="Required Field"></input>
@@ -150,8 +154,8 @@
 
                 <div class="form-inline">
 
-                    <button class="btn btn-default" ng-click="initialize()">Initialize</button>
-<!--                    <button class="btn btn-default" ng-click="check()">Check</button>-->
+ <!--                   <button class="btn btn-default" ng-click="initialize()">Initialize</button>
+                    <button class="btn btn-default" ng-click="check()">Check</button>-->
                     <button class="btn btn-primary" ng-click="initNW()" ng-disabled="banded && Math.abs(sequence1.length - sequence2.length) >= k-1 && k > 3">Run</button>
                 </div>
             </form>

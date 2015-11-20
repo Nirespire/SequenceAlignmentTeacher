@@ -46,7 +46,12 @@
             case "bandedAlignment":
                 templateUrl = 'modal/aboutBandedAlignment.html?bust=' + Math.random().toString(36).slice(2);
                 break;
+            case "start":
+                templateUrl = 'modal/start.html?bust=' + Math.random().toString(36).slice(2);
+                break;
             }
+            
+            
 
 
 
