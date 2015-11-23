@@ -3,6 +3,31 @@
         <h1 class="modal-title">Alignment Result</h1>
     </div>
     <div class="modal-body">
+        
+        <ul>
+            <li>
+            Once the alignment matrix has been filled, we consider a “traceback” of the work performed, which is highlighted in red
+            </li>     
+            <ul>
+                <li>For Global: start at the bottom left entry and traceback a path following the arrows</li>
+                <li>For Local: start at a maximum value and traceback a path following the arrows</li>
+                <li>For Dovetail: start at a maximum on the last row and last column and traceback a path following the arrows</li>
+                <li>For Pattern: start at a maximum on the last row and traceback a path following the arrows</li>
+            </ul>
+            <li>Now consider the path created beginning at the top left entry</li>
+            <ul>
+                <li>Each traversal down means consider one letter from sequence 1 but not from sequence 2. We call this an insertion of one letter, represented by an i.</li>
+                <li>Each traversal right means consider one letter from sequence 2 but not from sequence 1. We call this deletion of one letter represented by a d.</li>
+                <li>Each traversal diagonally means consider both letters from each sequence. If they match, then consider it so, represented by a vertical bar. 
+                    If not, consider it a replacement of one letter represented by an r.</li>
+            </ul>
+            
+            <li>Note: There can be more than one alignment result from a given matrix. Try to find an alternate alignment from the one shown here.</li>
+        
+        </ul>
+        
+        <img src="img/alignmentResult.png" alt="alignment result" class="img-thumbnail"><br>
+        Example alignment result with 1 delete, 1 replace and 2 inserts
 
     </div>
     <div class="modal-footer">

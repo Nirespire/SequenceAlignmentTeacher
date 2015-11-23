@@ -5,9 +5,33 @@
     <div class="modal-body">
         
         <ul>
-            <li>
-                A table that compares two sequences, N and M, with N+1 rows and M+1 columns.
-            </li>
+            <li> A table that compares two sequences, N and M, with N+1 rows and M+1 columns.</li>
+            <li>The process of filling out the matrix goes as follows:</li>
+            <ul>
+                <li>Begin by inserting both sequences in the first row of opposite axis</li>
+                <li>Then fill out the next row and next column depending on the Alignment Method selected</li>
+                <ul>
+                    <li>For Global, start with 0 and add either a Penalty or Indel score on each successive entry for the entire first row and column</li>
+                    <li>For Local, Dovetail, or Pattern, simply fill out the first row and column with zeroes</li>
+                </ul>
+                <li>Continue by starting at the first empty cell on the top right. We will determine the value for this entry based on the values present on the three entries to the left, diagonal, and above it.</li>
+                <ul>
+                    <li>If coming from the left, the value would be the value on the left + the Penalty or Indel value</li>
+                    <li>If coming from above, the value would be the value above + the Penalty or Indel value</li>
+                    <li>If coming diagonally, consider the letters of each sequence lined up at that entry</li>
+                    <ul>
+                        <li>If they match, then the value would be the diagonal value + 0 or the Match value</li>
+                        <li>If they do not match, then the value would be the diagonal value + the Penalty or Mismatch value</li>
+                    </ul>
+                    <li>If anything other than Global alignment is chosen, also consider 0 as an option</li>
+                    <li>Compute each of these values and consider</li>
+                    <ul>
+                        <li>If edit distance is picked, pick the lowest</li>
+                        <li>Else, pick the highest</li>
+                    </ul>
+                </ul>
+                <li>Once a value is chosen, keep track of which direction(s) you picked by adding an arrow on that entry</li>
+            </ul>
         </ul>
 
     </div>

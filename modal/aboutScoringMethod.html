@@ -7,6 +7,13 @@
         <ul>
             <li>Minimum number of operators/mutations (insert, delete, replace) required to transform one sequence into the other</li>
             <li>Penalty = amount paid (subtracted) per mismatch</li>
+            <li>Why is edit distance disabled for everything but global alignment?</li>
+            <ul>
+                <li>
+                Since local alignment always has an option to choose 0 as a minimum value for any cell and edit distance can only increase, 
+                the matrix will end up being filled with only zeroes since the algorithm will see that as the best choice always.
+                </li>
+            </ul>
         </ul>
         
         <img src="img/editdistance.jpg" alt="pattern search alignment" class="img-thumbnail">
