@@ -122,7 +122,33 @@
         android:layout_alignRight="@+id/scoringMethod"
         android:layout_alignEnd="@+id/scoringMethod" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Banded Alignment"
+        android:id="@+id/checkBox"
+        android:layout_below="@+id/mismatch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="false"
+        android:layout_alignRight="@+id/sequence1"
+        android:layout_alignEnd="@+id/sequence1" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/k"
+        android:textColorHint="#FFFFFF"
+        android:hint="k: n/a"
+        android:imeOptions="actionDone"
+        android:gravity="center"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:layout_alignTop="@+id/checkBox"
+        android:layout_alignRight="@+id/mismatch"
+        android:layout_alignEnd="@+id/mismatch"
+        android:layout_alignLeft="@+id/sequence2"
+        android:layout_alignStart="@+id/sequence2" />
 
 
 </RelativeLayout>

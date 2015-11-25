@@ -9,25 +9,31 @@
         <h4>Global</h4>
         <ul>
             <li>
-            "aligns the entire sequence; align all positions in sequence 1 with sequence 2, there will be mismatches, suitable for similar sequences"
+            "Align all positions in sequence 1 with sequence 2, there will be mismatches, inserts or deletes if the sequences are at all different"
             </li>
         </ul>
         <h4>Local</h4>
         <ul>
             <li>
-            "align 2 subsequences; align substrings of each sequence instead of the whole sequence to find highly similar regions"
+            "Align 2 subsequences of each sequence, instead of the whole sequence, to find highly similar regions"
             </li>
         </ul>
         <h4>Dovetail</h4>
         <ul>
             <li>
-            "align opposite ends of sequences; aligns prefix of one sequence with the suffix other sequence"
+            "Align opposite ends of sequences so that the prefix of one sequence is aligned with the suffix of the other sequence"
             </li>
         </ul>
         <h4>Pattern</h4>
         <ul>
             <li>
-            "align a complete sequence to a subsequence of another sequence"
+            "Align a complete sequence to a subsequence of another sequence"
+            </li>
+        </ul>
+        <h4>Banded</h4>
+        <ul>
+            <li>
+            "Banded alignment is a constraint based on a value k. When filling out the alignment matrix, the two sequences are limited in their difference by at most k edit operations. The main result of this is a "band" being produced along the main diagonal of the matrix with a width of k."
             </li>
         </ul>
         ]]>
@@ -51,10 +57,10 @@
             "insert/delete = penalty to insert a letter from one sequence to the other sequence or delete a letter from one sequence"
             </li>
         </ul>
-        <h4>BLOSSUM62</h4>
+        <h4>BLOSSUM</h4>
         <ul>
             <li>
-            "BLOSUM is a scoring matrix that shows the relationship between ith and jth letters. In the matrix, positive numbers indicate that mutation between the two letters is likely. The magnitude of the number shows the degree of proximity."
+            "BLOSUM-k (BLOcks SUbstitution Matrix) is a scoring matrix that shows the relationship between ith and jth letters. The matrix is created by clustering similar sequences (where K represents the percentage of sequences that were identical) into one single sequence and then comparing those sequences. In the matrix, positive numbers indicate that mutation between the two letters is likely. The magnitude of the number shows the degree of proximity."
             </li>
         </ul>
         ]]>
@@ -72,7 +78,44 @@
         <h4>Instructions</h4>
         <ul>
             <li>
-            "To start using the app, simply select the initialize button at the top of the actionbar. Enter two sequences of size 6 or less. Select an alignment method (global by default), a scoring method (score by default), an insert/delete cost (-2 by default), a match cost (+1 by default), and a mismatch cost (-1 by default). Then select the “ok” button. An alignment at the top of the page will appear, indicating how the two sequences line up. Below the alignment is a 2D matrix that highlights the traceback path and includes arrows, which indicate where values from the matrix came from."
+            "To start using the app, simply select the initialize button at the top of the actionbar. Enter two sequences of size 6 or less. Only valid amino acid character will be accepted as inputs. The following letters cannot be used: B, J, O, U, X, Z. Select an alignment method (global by default), a scoring method (score by default), an insert/delete cost (-2 by default), a match cost (+1 by default), and a mismatch cost (-1 by default). Then select the “ok” button. An alignment at the top of the page will appear, indicating how the two sequences line up. Below the alignment is a 2D matrix that highlights the traceback path and includes arrows, which indicate where values from the matrix came from."
+            </li>
+        </ul>
+        <h4>Alignment Matrix</h4>
+        <ul>
+            <li>
+            "A table that compares two sequences, N and M, with N+1 rows and M+1 columns.
+            The process of filling out the matrix goes as follows:
+            Begin by inserting both sequences in the first row of opposite axis.
+            Then fill out the next row and next column depending on the Alignment Method selected.
+            For Global, start with 0 and add either a Penalty or Indel score on each successive entry for the entire first row and column.
+            For Local, Dovetail, or Pattern, simply fill out the first row and column with zeroes.
+            Continue by starting at the first empty cell on the top right. We will determine the value for this entry based on the values present on the three entries to the left, diagonal, and above it.
+            If coming from the left, the value would be the value on the left + the Penalty or Indel value.
+            If coming from above, the value would be the value above + the Penalty or Indel value.
+            If coming diagonally, consider the letters of each sequence lined up at that entry.
+            If they match, then the value would be the diagonal value + 0 or the Match value.
+            If they do not match, then the value would be the diagonal value + the Penalty or Mismatch value
+            If anything other than Global alignment is chosen, also consider 0 as an option.
+            Compute each of these values and consider.
+            If edit distance is picked, pick the lowest.
+            Else, pick the highest.
+            Once a value is chosen, keep track of which direction(s) you picked by adding an arrow on that entry."
+            </li>
+        </ul>
+        <h4>Alignment Result</h4>
+        <ul>
+            <li>
+            "Once the alignment matrix has been filled, we consider a “traceback” of the work performed, which is highlighted in red.
+            For Global: start at the bottom right entry and traceback a path following the arrows.
+            For Local: start at a maximum value and traceback a path following the arrows.
+            For Dovetail: start at a maximum on the last row and last column and traceback a path following the arrows.
+            For Pattern: start at a maximum on the last row and traceback a path following the arrows.
+            Now consider the path created beginning at the top left entry.
+            Each traversal down means consider one letter from sequence 1 but not from sequence 2. We call this an insertion of one letter, represented by an i.
+            Each traversal right means consider one letter from sequence 2 but not from sequence 1. We call this deletion of one letter represented by a d.
+            Each traversal diagonally means consider both letters from each sequence. If they match, then consider it so, represented by a vertical bar. If not, consider it a replacement of one letter represented by an r.
+            Note: There can be more than one alignment result from a given matrix. Try to find an alternate alignment from the one shown here."
             </li>
         </ul>
         ]]>

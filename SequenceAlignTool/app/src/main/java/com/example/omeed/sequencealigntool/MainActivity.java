@@ -18,8 +18,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Spinner;
@@ -47,6 +50,9 @@ public class MainActivity extends Activity  {
     public EditText s1;
     public EditText s2;
     public EditText align;
+    public EditText kValue;
+    public boolean bandedAlignment = false;
+    public boolean error = false;
 
     TableLayout tableLayout;
     TableLayout tl;
@@ -60,6 +66,7 @@ public class MainActivity extends Activity  {
     public int mismatchValue;
     public int gapValue;
     public int matrix[][];
+    public int kVal;
     final Context context = this;
 
     public String traceback[][];
@@ -68,6 +75,9 @@ public class MainActivity extends Activity  {
     public List<String> list2;
     public int paths[][];
     public ArrayList<String> alignment;
+    public int blossum62[][];
+    public int blossum45[][];
+    public List<Character> aminoAcids;
 
 
     @Override
@@ -84,6 +94,64 @@ public class MainActivity extends Activity  {
         s1.setKeyListener(null);
         s2.setKeyListener(null);
         align.setKeyListener(null);
+
+         aminoAcids = new ArrayList<Character> (Arrays.asList('A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V', 'B', 'J', 'Z', 'X'));
+
+        blossum45 = new int[][]{
+                {5, -2, -1, -2, -1, -1, -1, 0, -2, -1, -1, -1, -1, -2, -1, 1, 0, -2, -2, 0, -1, -1, -1, -1},
+                {-2, 7, 0, -1, -3, 1, 0, -2, 0, -3, -2, 3, -1, -2, -2, -1, -1, -2, -1, -2, -1, -3, 1, -1},
+                {-1, 0, 6, 2, -2, 0, 0, 0, 1, -2, -3, 0, -2, -2, -2, 1, 0, -4, -2, -3, 5, -3, 0, -1},
+                {-2, -1, 2, 7, -3, 0, 2, -1, 0, -4, -3, 0, -3, -4, -1, 0, -1, -4, -2, -3, 6, -3, 1, -1},
+                {-1, -3, -2, -3, 12, -3, -3, -3, -3, -3, -2, -3, -2, -2, -4, -1, -1, -5, -3, -1, -2, -2, -3, -1},
+                {-1, 1, 0, 0, -3, 6, 2, -2, 1, -2, -2, 1, 0, -4, -1, 0, -1, -2, -1, -3, 0, -2, 4, -1},
+                {-1, 0, 0, 2, -3, 2, 6, -2, 0, -3, -2, 1, -2, -3, 0, 0, -1, -3, -2, -3, 1, -3, 5, -1},
+                {0, -2, 0, -1, -3, -2, -2, 7, -2, -4, -3, -2, -2, -3, -2, 0, -2, -2, -3, -3, -1, -4, -2, -1},
+                {-2, 0, 1, 0, -3, 1, 0, -2, 10, -3, -2, -1, 0, -2, -2, -1, -2, -3, 2, -3, 0, -2, 0, -1},
+                {-1, -3, -2, -4, -3, -2, -3, -4, -3, 5, 2, -3, 2, 0, -2, -2, -1, -2, 0, 3, -3, 4, -3, -1},
+                {-1, -2, -3, -3, -2, -2, -2, -3, -2, 2, 5, -3, 2, 1, -3, -3, -1, -2, 0, 1, -3, 4, -2, -1},
+                {-1, 3, 0, 0, -3, 1, 1, -2, -1, -3, -3, 5, -1, -3, -1, -1, -1, -2, -1, -2, 0, -3, 1, -1},
+                {-1, -1, -2, -3, -2, 0, -2, -2, 0, 2, 2, -1, 6, 0, -2, -2, -1, -2, 0, 1, -2, 2, -1, -1},
+                {-2, -2, -2, -4, -2, -4, -3, -3, -2, 0, 1, -3, 0, 8, -3, -2, -1, 1, 3, 0, -3, 1, -3, -1},
+                {-1, -2, -2, -1, -4, -1, 0, -2, -2, -2, -3, -1, -2, -3, 9, -1, -1, -3, -3, -3, -2, -3, -1, -1},
+                {1, -1, 1, 0, -1, 0, 0, 0, -1, -2, -3, -1, -2, -2, -1, 4, 2, -4, -2, -1, 0, -2, 0, -1},
+                {0, -1, 0, -1, -1, -1, -1, -2, -2, -1, -1, -1, -1, -1, -1, 2, 5, -3, -1, 0, 0, -1, -1, -1},
+                {-2, -2, -4, -4, -5, -2, -3, -2, -3, -2, -2, -2, -2, 1, -3, -4, -3, 15, 3, -3, -4, -2, -2, -1},
+                {-2, -1, -2, -2, -3, -1, -2, -3, 2, 0, 0, -1, 0, 3, -3, -2, -1, 3, 8, -1, -2, 0, -2, -1},
+                {0, -2, -3, -3, -1, -3, -3, -3, -3, 3, 1, -2, 1, 0, -3, -1, 0, -3, -1, 5, -3, 2, -3, -1},
+                {-1, -1, 5, 6, -2, 0, 1, -1, 0, -3, -3, 0, -2, -3, -2, 0, 0, -4, -2, -3, 5, -3, 1, -1},
+                {-1, -3, -3, -3, -2, -2, -3, -4, -2, 4, 4, -3, 2, 1, -3, -2, -1, -2, 0, 2, -3, 4, -2, -1},
+                {-1, 1, 0, 1, -3, 4, 5, -2, 0, -3, -2, 1, -1, -3, -1, 0, -1, -2, -2, -3, 1, -2, 5, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+        };
+
+
+        blossum62 = new int[][]{
+                {4, -1, -2, -2, 0, -1, -1, 0, -2, -1, -1, -1, -1, -2, -1, 1, 0, -3, -2, 0, -2, -1, 0},
+                {-1, 5, 0, -2, -3, 1, 0, -2, 0, -3, -2, 2, -1, -3, -2, -1, -1, -3, -2, -3, -1, 0, -1},
+                {-2, 0, 6, 1, -3, 0, 0, 0, 1, -3, -3, 0, -2, -3, -2, 1, 0, -4, -2, -3, 3, 0, -1},
+                {-2, -2, 1, 6, -3, 0, 2, -1, -1, -3, -4, -1, -3, -3, -1, 0, -1, -4, -3, -3, 4, 1, -1},
+                {0, -3, -3, -3, 9, -3, -4, -3, -3, -1, -1, -3, -1, -2, -3, -1, -1, -2, -2, -1, -3, -3, -2},
+                {-1, 1, 0, 0, -3, 5, 2, -2, 0, -3, -2, 1, 0, -3, -1, 0, -1, -2, -1, -2, 0, 3, -1},
+                {-1, 0, 0, 2, -4, 2, 5, -2, 0, -3, -3, 1, -2, -3, -1, 0, -1, -3, -2, -2, 1, 4, -1},
+                {0, -2, 0, -1, -3, -2, -2, 6, -2, -4, -4, -2, -3, -3, -2, 0, -2, -2, -3, -3, -1, -2, -1},
+                {-2, 0, 1, -1, -3, 0, 0, -2, 8, -3, -3, -1, -2, -1, -2, -1, -2, -2, 2, -3, 0, 0, -1},
+                {-1, -3, -3, -3, -1, -3, -3, -4, -3, 4, 2, -3, 1, 0, -3, -2, -1, -3, -1, 3, -3, -3, -1},
+                {-1, -2, -3, -4, -1, -2, -3, -4, -3, 2, 4, -2, 2, 0, -3, -2, -1, -2, -1, 1, -4, -3, -1},
+                {-1, 2, 0, -1, -3, 1, 1, -2, -1, -3, -2, 5, -1, -3, -1, 0, -1, -3, -2, -2, 0, 1, -1},
+                {-1, -1, -2, -3, -1, 0, -2, -3, -2, 1, 2, -1, 5, 0, -2, -1, -1, -1, -1, 1, -3, -1, -1},
+                {-2, -3, -3, -3, -2, -3, -3, -3, -1, 0, 0, -3, 0, 6, -4, -2, -2, 1, 3, -1, -3, -3, -1},
+                {-1, -2, -2, -1, -3, -1, -1, -2, -2, -3, -3, -1, -2, -4, 7, -1, -1, -4, -3, -2, -2, -1, -2},
+                {1, -1, 1, 0, -1, 0, 0, 0, -1, -2, -2, 0, -1, -2, -1, 4, 1, -3, -2, -2, 0, 0, 0},
+                {0, -1, 0, -1, -1, -1, -1, -2, -2, -1, -1, -1, -1, -2, -1, 1, 5, -2, -2, 0, -1, -1, 0},
+                {-3, -3, -4, -4, -2, -2, -3, -2, -2, -3, -2, -3, -1, 1, -4, -3, -2, 11, 2, -3, -4, -3, -2},
+                {-2, -2, -2, -3, -2, -1, -2, -3, 2, -1, -1, -2, -1, 3, -3, -2, -2, 2, 7, -1, -3, -2, -1},
+                {0, -3, -3, -3, -1, -2, -2, -3, -3, 3, 1, -2, 1, -1, -2, -2, 0, -3, -1, 4, -3, -2, -1},
+                {-2, -1, 3, 4, -3, 0, 1, -1, 0, -3, -4, 0, -3, -3, -2, 0, -1, -4, -3, -3, 4, 1, -1},
+                {-1, 0, 0, 1, -3, 3, 4, -2, 0, -3, -3, 1, -1, -3, -1, 0, -1, -3, -2, -2, 1, 4, -1},
+                {0, -1, -1, -1, -2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -2, 0, 0, -2, -1, -1, -1, -1, -1}
+        };
+        Log.i("kk", Integer.toString(blossum62[0][2]));
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,6 +224,7 @@ public class MainActivity extends Activity  {
                             counter2++;
                         }
                     }
+
                     if(i == 0 && j == 0) {
                         textView.setText(" ");
                     }
@@ -172,6 +241,9 @@ public class MainActivity extends Activity  {
                     else if (i == 0 && j > 1){
                         textView.setText(String.valueOf(sequence2.getText().charAt(j-2)).toUpperCase());
                         textView.setTextColor(Color.BLACK);
+                    }
+                    else if ((i > j + kVal || j > i + kVal) && bandedAlignment) {
+                        textView.setText(" ");
                     }
                     else if (i == 1 && j == 1) {
                         textView.setText("\n" + " " + "0");
@@ -273,6 +345,9 @@ public class MainActivity extends Activity  {
                         textView.setText(String.valueOf(sequence2.getText().charAt(j-2)).toUpperCase());
                         textView.setTextColor(Color.BLACK);
                     }
+                    else if ((i > j + kVal || j > i + kVal) && bandedAlignment) {
+                        textView.setText(" ");
+                    }
                     else if (i == 1 && j == 1) {
                         textView.setText("\n" + " " + "0");
                     }
@@ -343,6 +418,9 @@ public class MainActivity extends Activity  {
                     else if (i == 0 && j > 1){
                         textView.setText(String.valueOf(sequence2.getText().charAt(j-2)).toUpperCase());
                         textView.setTextColor(Color.BLACK);
+                    }
+                    else if ((i > j + kVal || j > i + kVal) && bandedAlignment) {
+                        textView.setText(" ");
                     }
                     else if (i == 1 && j == 1) {
                         textView.setText("\n" + " " + "0");
@@ -415,6 +493,9 @@ public class MainActivity extends Activity  {
                         textView.setText(String.valueOf(sequence2.getText().charAt(j-2)).toUpperCase());
                         textView.setTextColor(Color.BLACK);
                     }
+                    else if ((i > j + kVal || j > i + kVal) && bandedAlignment) {
+                        textView.setText(" ");
+                    }
                     else if (i == 1 && j == 1) {
                         textView.setText("\n" + " " + "0");
                     }
@@ -483,10 +564,24 @@ public class MainActivity extends Activity  {
         boolean isMatch = false;
         int min = 100000;
         int max = 0;
-        if(scoringValue == "Score") {
+        if(scoringValue == "Score" || scoringValue == "BLOSUM62" || scoringValue == "BLOSUM45") {
             if (alignmentValue.equals("Global")) {
                 for (int i = 0; i < r; i++) {
                     for (int j = 0; j < c; j++) {
+                        if(scoringValue == "BLOSUM62") {
+                            gapValue = -4;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
+                        if(scoringValue == "BLOSUM45") {
+                            gapValue = -5;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
                         if (i == 0 && j == 0) {
                             matrix[i][j] = 0;
                             traceback[i][j] = "0";
@@ -576,6 +671,20 @@ public class MainActivity extends Activity  {
                 int max2;
                 for (int i = 0; i < r; i++) {
                     for (int j = 0; j < c; j++) {
+                        if(scoringValue == "BLOSUM62") {
+                            gapValue = -4;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
+                        if(scoringValue == "BLOSUM45") {
+                            gapValue = -5;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
                         if (i == 0 && j == 0) {
                             matrix[i][j] = 0;
                             traceback[i][j] = "0";
@@ -681,6 +790,20 @@ public class MainActivity extends Activity  {
                 int max2;
                 for (int i = 0; i < r; i++) {
                     for (int j = 0; j < c; j++) {
+                        if(scoringValue == "BLOSUM62") {
+                            gapValue = -4;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
+                        if(scoringValue == "BLOSUM45") {
+                            gapValue = -5;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
                         if ((i == 0 && j == 0) || (i == 0 && j > 0) || (i > 0 && j == 0)) {
                             matrix[i][j] = 0;
                             traceback[i][j] = "0";
@@ -759,6 +882,20 @@ public class MainActivity extends Activity  {
                 int max2;
                 for (int i = 0; i < r; i++) {
                     for (int j = 0; j < c; j++) {
+                        if(scoringValue == "BLOSUM62") {
+                            gapValue = -4;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
+                        if(scoringValue == "BLOSUM45") {
+                            gapValue = -5;
+                            if (i > 0 && j > 0) {
+                                matchValue = blosum(i-1,j-1);
+                                mismatchValue = blosum(i-1,j-1);
+                            }
+                        }
                         if (i == 0 && j == 0) {
                             matrix[i][j] = 0;
                             traceback[i][j] = "0";
@@ -1093,13 +1230,19 @@ public class MainActivity extends Activity  {
                 }
             }
 //            Log.i("NOO",Integer.toString(max));
-            globalTraceback.add(maxIndex);
-            index++;
-            String[] tokens = maxIndex.split(",");
-            i = Integer.parseInt(tokens[0]);
-            j = Integer.parseInt(tokens[1]);
-            globalTraceback.add(traceback[i][j]);
-            while(value > index){
+            if(maxIndex != "") {
+                globalTraceback.add(maxIndex);
+                index++;
+                String[] tokens = maxIndex.split(",");
+                i = Integer.parseInt(tokens[0]);
+                j = Integer.parseInt(tokens[1]);
+                globalTraceback.add(traceback[i][j]);
+            }
+            else {
+                error = true;
+            }
+
+            while(value > index && maxIndex != ""){
                 temp = globalTraceback.get(index);
                 String[] tokens2 = temp.split(",");
 
@@ -1154,13 +1297,19 @@ public class MainActivity extends Activity  {
 
 
 //            Log.i("NOO",Integer.toString(max));
-            globalTraceback.add(maxIndex);
-            index++;
-            String[] tokens = maxIndex.split(",");
-            i = Integer.parseInt(tokens[0]);
-            j = Integer.parseInt(tokens[1]);
-            globalTraceback.add(traceback[i][j]);
-            while(value > index){
+            if(maxIndex != "") {
+                globalTraceback.add(maxIndex);
+                index++;
+                String[] tokens = maxIndex.split(",");
+                i = Integer.parseInt(tokens[0]);
+                j = Integer.parseInt(tokens[1]);
+                globalTraceback.add(traceback[i][j]);
+            }
+            else {
+                error = true;
+            }
+
+            while(value > index && maxIndex != ""){
                 temp = globalTraceback.get(index);
                 String[] tokens2 = temp.split(",");
 
@@ -1192,74 +1341,54 @@ public class MainActivity extends Activity  {
     }
 
     public void alignSequence() {
-        if(alignmentValue == "Global") {
-            String temp;
-            int x;
-            int y;
-            int x2;
-            int y2;
-            int tempX;
-            int tempY;
-            boolean set = false;
+        if(!error) {
+            if(alignmentValue == "Global") {
+                String temp;
+                int x;
+                int y;
+                int x2;
+                int y2;
+                int tempX;
+                int tempY;
+                boolean set = false;
 
-            temp = globalTraceback.get(0);
-            String[] tokens2 = temp.split(",");
+                temp = globalTraceback.get(0);
+                String[] tokens2 = temp.split(",");
 
-            x2 = Integer.parseInt(tokens2[0]);
-            y2 = Integer.parseInt(tokens2[1]);
+                x2 = Integer.parseInt(tokens2[0]);
+                y2 = Integer.parseInt(tokens2[1]);
 
-            if (sequence1.length() == 1 && sequence2.length() == 1) {
-                if (sequence1.getText().charAt(0) == sequence2.getText().charAt(0)) {
-                    alignment.add("|");
-                } else if (sequence1.getText().charAt(0) != sequence2.getText().charAt(0)) {
-                    alignment.add("r");
-                }
-                set = true;
-            }
-
-            for (int i = 1; i < globalTraceback.size(); i++) {
-
-                if (set) {
-                    break;
-                }
-
-                temp = globalTraceback.get(i);
-                String[] tokens = temp.split(",");
-
-                x = Integer.parseInt(tokens[0]);
-                y = Integer.parseInt(tokens[1]);
-
-                tempX = x2;
-                tempY = y2;
-
-                x2 = x2 - x;
-                y2 = y2 - y;
-
-                if (x2 == -1 && y2 == -1) {
-                    if (sequence1.getText().charAt(tempX) == sequence2.getText().charAt(tempY)) {
+                if (sequence1.length() == 1 && sequence2.length() == 1) {
+                    if (sequence1.getText().charAt(0) == sequence2.getText().charAt(0)) {
                         alignment.add("|");
-                    } else if (sequence1.getText().charAt(tempX) != sequence2.getText().charAt(tempY)) {
+                    } else if (sequence1.getText().charAt(0) != sequence2.getText().charAt(0)) {
                         alignment.add("r");
                     }
-
-                } else if (x2 == 0 && y2 == -1) {
-                    alignment.add("d");
-
-                } else {
-                    alignment.add("i");
+                    set = true;
                 }
-                x2 = x;
-                y2 = y;
 
-                if (i == globalTraceback.size() - 1 && (alignmentValue == "Global")) {
-                    x = sequence1.length();
-                    y = sequence2.length();
+                for (int i = 1; i < globalTraceback.size(); i++) {
+
+                    if (set) {
+                        break;
+                    }
+
+                    temp = globalTraceback.get(i);
+                    String[] tokens = temp.split(",");
+
+                    x = Integer.parseInt(tokens[0]);
+                    y = Integer.parseInt(tokens[1]);
+
+                    tempX = x2;
+                    tempY = y2;
+
                     x2 = x2 - x;
                     y2 = y2 - y;
+
                     if (x2 == -1 && y2 == -1) {
-                        if (sequence1.getText().charAt(sequence1.length() - 1) == sequence2.getText().charAt(sequence2.length() - 1)) {
+                        if (sequence1.getText().charAt(tempX) == sequence2.getText().charAt(tempY)) {
                             alignment.add("|");
-                        } else if (sequence1.getText().charAt(sequence1.length() - 1) != sequence2.getText().charAt(sequence2.length() - 1)) {
+                        } else if (sequence1.getText().charAt(tempX) != sequence2.getText().charAt(tempY)) {
                             alignment.add("r");
                         }
 
@@ -1269,73 +1398,95 @@ public class MainActivity extends Activity  {
                     } else {
                         alignment.add("i");
                     }
+                    x2 = x;
+                    y2 = y;
+
+                    if (i == globalTraceback.size() - 1 && (alignmentValue == "Global")) {
+                        x = sequence1.length();
+                        y = sequence2.length();
+                        x2 = x2 - x;
+                        y2 = y2 - y;
+                        if (x2 == -1 && y2 == -1) {
+                            if (sequence1.getText().charAt(sequence1.length() - 1) == sequence2.getText().charAt(sequence2.length() - 1)) {
+                                alignment.add("|");
+                            } else if (sequence1.getText().charAt(sequence1.length() - 1) != sequence2.getText().charAt(sequence2.length() - 1)) {
+                                alignment.add("r");
+                            }
+
+                        } else if (x2 == 0 && y2 == -1) {
+                            alignment.add("d");
+
+                        } else {
+                            alignment.add("i");
+                        }
+                    }
                 }
-            }
-            for (int k = 0; k < alignment.size(); k++) {
-                Log.i("LOL", alignment.get(k));
-            }
-
-        }
-
-        else {
-            String temp;
-            int x;
-            int y;
-            int x2;
-            int y2;
-            int tempX;
-            int tempY;
-            boolean set = false;
-
-            temp = globalTraceback.get(0);
-            String[] tokens2 = temp.split(",");
-
-            x2 = Integer.parseInt(tokens2[0]);
-            y2 = Integer.parseInt(tokens2[1]);
-
-            if (sequence1.length() == 1 && sequence2.length() == 1) {
-                if (sequence1.getText().charAt(0) == sequence2.getText().charAt(0)) {
-                    alignment.add("|");
-                } else if (sequence1.getText().charAt(0) != sequence2.getText().charAt(0)) {
-                    alignment.add("r");
+                for (int k = 0; k < alignment.size(); k++) {
+                    Log.i("LOL", alignment.get(k));
                 }
-                set = true;
+
             }
 
-            for (int i = 1; i < globalTraceback.size(); i++) {
-                if(set) {
-                    break;
-                }
-                temp = globalTraceback.get(i);
-                String[] tokens = temp.split(",");
+            else {
+                String temp;
+                int x;
+                int y;
+                int x2;
+                int y2;
+                int tempX;
+                int tempY;
+                boolean set = false;
 
-                x = Integer.parseInt(tokens[0]);
-                y = Integer.parseInt(tokens[1]);
+                temp = globalTraceback.get(0);
+                String[] tokens2 = temp.split(",");
 
-                tempX = x2;
-                tempY = y2;
+                x2 = Integer.parseInt(tokens2[0]);
+                y2 = Integer.parseInt(tokens2[1]);
 
-                x2 = x2 - x;
-                y2 = y2 - y;
-
-                if (x2 == -1 && y2 == -1) {
-                    if (sequence1.getText().charAt(tempX) == sequence2.getText().charAt(tempY)) {
+                if (sequence1.length() == 1 && sequence2.length() == 1) {
+                    if (sequence1.getText().charAt(0) == sequence2.getText().charAt(0)) {
                         alignment.add("|");
-                    } else if (sequence1.getText().charAt(tempX) != sequence2.getText().charAt(tempY)) {
+                    } else if (sequence1.getText().charAt(0) != sequence2.getText().charAt(0)) {
                         alignment.add("r");
                     }
-
-                } else if (x2 == 0 && y2 == -1) {
-                    alignment.add("d");
-
-                } else {
-                    alignment.add("i");
+                    set = true;
                 }
-                x2 = x;
-                y2 = y;
-            }
-            for (int k = 0; k < alignment.size(); k++) {
-                Log.i("LOL", alignment.get(k));
+
+                for (int i = 1; i < globalTraceback.size(); i++) {
+                    if(set) {
+                        break;
+                    }
+                    temp = globalTraceback.get(i);
+                    String[] tokens = temp.split(",");
+
+                    x = Integer.parseInt(tokens[0]);
+                    y = Integer.parseInt(tokens[1]);
+
+                    tempX = x2;
+                    tempY = y2;
+
+                    x2 = x2 - x;
+                    y2 = y2 - y;
+
+                    if (x2 == -1 && y2 == -1) {
+                        if (sequence1.getText().charAt(tempX) == sequence2.getText().charAt(tempY)) {
+                            alignment.add("|");
+                        } else if (sequence1.getText().charAt(tempX) != sequence2.getText().charAt(tempY)) {
+                            alignment.add("r");
+                        }
+
+                    } else if (x2 == 0 && y2 == -1) {
+                        alignment.add("d");
+
+                    } else {
+                        alignment.add("i");
+                    }
+                    x2 = x;
+                    y2 = y;
+                }
+                for (int k = 0; k < alignment.size(); k++) {
+                    Log.i("LOL", alignment.get(k));
+                }
             }
         }
     }
@@ -1474,18 +1625,19 @@ public class MainActivity extends Activity  {
                             align.getText().insert(0, " ");
                         }
                     }
-                    else if (index == indexDifference && alignmentValue == "Pattern") {
-                        s1.getText().insert(0, "  ");
-                        align.getText().insert(0, "   ");
-                    }
+
                     else if (index == 0 && indexDifference == 4 && alignmentValue == "Dovetail") {
                         if(padding == 1) {
                             s1.append("              ");
                             align.append("      ");
                         }
-                        else if(padding < 3) {
+                        else if(padding == 2) {
                             s1.append("      ");
                             align.append("  ");
+                        }
+                        else if(padding == 5 || padding == 4 || padding == 3){
+                            s1.append("");
+                            align.append("");
                         }
                         else {
                             s1.append("    ");
@@ -1497,9 +1649,13 @@ public class MainActivity extends Activity  {
                             s1.append("              ");
                             align.append("      ");
                         }
-                        else if(padding < 3) {
-                            s1.append("      ");
+                        else if(padding == 2) {
+                            s1.append("    ");
                             align.append("  ");
+                        }
+                        else if(padding == 5 || padding == 4 || padding == 3){
+                            s1.append("");
+                            align.append("");
                         }
                         else {
                             s1.append("    ");
@@ -1511,9 +1667,13 @@ public class MainActivity extends Activity  {
                             s1.append("              ");
                             align.append("      ");
                         }
-                        else if(padding < 3) {
-                            s1.append("      ");
+                        else if(padding == 2) {
+                            s1.append("    ");
                             align.append("  ");
+                        }
+                        else if(padding == 5 || padding == 4 || padding == 3){
+                            s1.append("");
+                            align.append("");
                         }
                         else {
                             s1.append("    ");
@@ -1525,14 +1685,195 @@ public class MainActivity extends Activity  {
                             s1.append("              ");
                             align.append("      ");
                         }
-                        else if(padding < 3) {
-                            s1.append("      ");
+                        else if(padding == 2) {
+                            s1.append("    ");
                             align.append("  ");
+                        }
+                        else if(padding == 5 || padding == 4 || padding == 3){
+                            s1.append("");
+                            align.append("");
                         }
                         else {
                             s1.append("    ");
                             align.append(" ");
                         }
+                    }
+                    else if (index == 0 && indexDifference == 4 && alignmentValue == "Local") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "                ");
+                            align.getText().insert(0, "           ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "         ");
+                            align.getText().insert(0, "      ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "    ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+                    }
+                    else if (index == 0 && indexDifference == 3 && alignmentValue == "Local") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "             ");
+                            align.getText().insert(0, "       ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "   ");
+                            align.getText().insert(0, " ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+                    }
+                    else if (index == 0 && indexDifference == 2 && alignmentValue == "Local") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "  ");
+                            align.getText().insert(0, " ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+                    }
+                    else if (index == 0 && indexDifference == 1 && alignmentValue == "Local") {
+                        if(padding == 1) {
+                            s2.append(" ");
+                            align.append("     ");
+                        }
+                        else if(padding == 2) {
+                            s2.append(" ");
+                            align.append("  ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.append(" ");
+                            align.append(" ");
+                        }
+                        else {
+                            s2.append("");
+                            align.append("");
+                        }
+                    }
+                    else if (index == 0 && indexDifference == 0 && alignmentValue == "Local") {
+                            s2.append("");
+                            align.append("      ");
+
+                    }
+                    else if (index == indexDifference && alignmentValue == "Local") {
+                        s2.append("                    ");
+                        align.append("        ");
+
+                    }
+                    else if (index == 0 && indexDifference == 0 && alignmentValue == "Pattern") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            align.append("   ");
+                            s2.append("   ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+
+                    }
+                    else if (index == 0 && indexDifference == 1 && alignmentValue == "Pattern") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.append(" ");
+                            align.append(" ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+
+                    }
+                    else if (index == 0 && indexDifference == 2 && alignmentValue == "Pattern") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "  ");
+                            align.getText().insert(0, " ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+
+                    }
+                    else if (index == 0 && indexDifference == 3 && alignmentValue == "Pattern") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "  ");
+                            align.getText().insert(0, " ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+
+                    }
+                    else if (index == 0 && indexDifference == 4 && alignmentValue == "Pattern") {
+                        if(padding == 1) {
+                            s2.getText().insert(0, "        ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else if(padding == 2) {
+                            s2.getText().insert(0, "     ");
+                            align.getText().insert(0, " ");
+                        }
+                        else if(padding == 4 || padding == 3){
+                            s2.getText().insert(0, "   ");
+                            align.getText().insert(0, "   ");
+                        }
+                        else {
+                            s2.getText().insert(0, " ");
+                            align.getText().insert(0, "  ");
+                        }
+
                     }
                     else if (index < 2 && padding > 2) {
                         align.append(" ");
@@ -1562,18 +1903,33 @@ public class MainActivity extends Activity  {
 
                 for (int k = 0; k < 3*indexDifference; k++) {
 
-                    if (index == indexDifference && alignmentValue == "Dovetail") {
-                        align.append(" ");
-                        s2.append("  ");
-                    }
-
-                    else if (index == indexDifference) {
-                        align.append(" ");
-                        s2.append(" ");
-                    }
-                    else if(indexDifference == 1 && index > 0 && alignmentValue == "Dovetail") {
+                    if(indexDifference == 1 && index > 0 && alignmentValue == "Dovetail") {
                         align.getText().insert(0, "   ");
                         s2.getText().insert(0, "     ");
+                    }
+
+                    else if(alignmentValue == "Local") {
+                        if(indexDifference == 4) {
+                            align.getText().insert(0, " ");
+                            s2.getText().insert(0, "  ");
+                        }
+                        else if(indexDifference == 3){
+                            align.getText().insert(0, " ");
+                            s2.getText().insert(0, "   ");
+                        }
+                        else if(indexDifference == 2){
+                            if(k < 3) {
+                                align.getText().insert(0, " ");
+                            }
+                            s2.getText().insert(0, "  ");
+                        }
+                        else {
+                            if(k < 2) {
+                                align.append(" ");
+                                s2.getText().insert(0, "   ");
+                            }
+
+                        }
                     }
                     else if(indexDifference == 1 && index > 0) {
                         align.append("  ");
@@ -1586,8 +1942,13 @@ public class MainActivity extends Activity  {
                     }
 
                 }
-                if(indexDifference == 0 && index != 0) {
-                    align.append("          ");
+
+                if (index == indexDifference && alignmentValue == "Dovetail") {
+                    align.append(" ");
+                    s2.append("  ");
+                }
+                else if (index == indexDifference && alignmentValue == "Local") {
+                    align.append("       ");
                 }
             }
         }
@@ -1636,6 +1997,7 @@ public class MainActivity extends Activity  {
     }
 
     public void initialize() {
+        bandedAlignment = false;
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
 
@@ -1650,7 +2012,9 @@ public class MainActivity extends Activity  {
         match = (EditText) promptView.findViewById(R.id.match);
         mismatch = (EditText) promptView.findViewById(R.id.mismatch);
         gap = (EditText) promptView.findViewById(R.id.gap);
-
+        final CheckBox checkBox = (CheckBox) promptView.findViewById(R.id.checkBox);
+        kValue = (EditText) promptView.findViewById(R.id.k);
+        kValue.setEnabled(false);
 
         alignmentMethod = (Spinner) promptView.findViewById(R.id.alignmentMethod);
         list = new ArrayList<String>();
@@ -1663,7 +2027,31 @@ public class MainActivity extends Activity  {
         list2 = new ArrayList<String>();
         list2.add("Scoring Method: Score");
         list2.add("Scoring Method: Edit Distance");
+        list2.add("Scoring Method: BLOSUM45");
+        list2.add("Scoring Method: BLOSUM62");
         setSpace(list, list2);
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (checkBox.isChecked()) {
+                    kValue.setEnabled(true);
+                    kValue.setHint("k: 3");
+                    bandedAlignment = true;
+                    if(kValue.getText().toString().equals("")) {
+                        kVal = 3;
+                    }
+                    else {
+                        kVal = Integer.parseInt(kValue.getText().toString());
+                    }
+                }
+                else {
+                    bandedAlignment = false;
+                    kValue.setEnabled(false);
+                    kValue.setText("");
+                    kValue.setHint("k: n/a");
+                }
+            }
+        });
 
 
         // setup a dialog window
@@ -1673,85 +2061,184 @@ public class MainActivity extends Activity  {
                     public void onClick(DialogInterface dialog, int id) {
                         // get user input and set it to result
                         tableLayout.removeAllViews();
-                        if(sequence1.length() > 0 && sequence2.length() > 0) {
+                        if (sequence1.length() > 0 && sequence2.length() > 0) {
                             matrix = new int[sequence1.length() + 1][sequence2.length() + 1];
                             paths = new int[sequence1.length() + 1][sequence2.length() + 1];
                             traceback = new String[sequence1.length() + 1][sequence2.length() + 1];
                             globalTraceback = new ArrayList<String>();
                             alignment = new ArrayList<String>();
 
-                            if(match.getText().toString().equals("") && !scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
+                            if (match.getText().toString().equals("") && !scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
                                 matchValue = 1;
-                            }
-                            else if(match.getText().toString().equals("") && scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
+                            } else if (match.getText().toString().equals("") && scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
                                 matchValue = 0;
-                            }
-                            else {
+                            } else {
                                 matchValue = Integer.parseInt(match.getText().toString());
                             }
-                            if(mismatch.getText().toString().equals("") && !scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
+                            if (mismatch.getText().toString().equals("") && !scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
                                 mismatchValue = -1;
-                            }
-                            else if(mismatch.getText().toString().equals("") && scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
+                            } else if (mismatch.getText().toString().equals("") && scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
                                 mismatchValue = 1;
-                            }
-                            else {
+                            } else {
                                 mismatchValue = Integer.parseInt(mismatch.getText().toString());
                             }
-                            if(gap.getText().toString().equals("")) {
+                            if (gap.getText().toString().equals("")) {
                                 gapValue = -2;
-                            }
-                            else {
+                            } else {
                                 gapValue = Integer.parseInt(gap.getText().toString());
                             }
 
-                            if(alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Global")) {
+                            if (alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Global")) {
                                 alignmentValue = "Global";
-                            }
-                            else if(alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Local")) {
+                            } else if (alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Local")) {
                                 alignmentValue = "Local";
-                            }
-                            else if(alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Dovetail")) {
+                            } else if (alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Dovetail")) {
                                 alignmentValue = "Dovetail";
-                            }
-                            else if(alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Pattern")) {
+                            } else if (alignmentMethod.getSelectedItem().toString().equals("Alignment Method: Pattern")) {
                                 alignmentValue = "Pattern";
-                            }
-                            else {
+                            } else {
                                 alignmentValue = "Global";
                             }
 
-                            if(scoringMethod.getSelectedItem().toString().equals("Scoring Method: Score")) {
+                            if (scoringMethod.getSelectedItem().toString().equals("Scoring Method: Score")) {
                                 scoringValue = "Score";
-                            }
-                            else if(scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
+                            } else if (scoringMethod.getSelectedItem().toString().equals("Scoring Method: Edit Distance")) {
                                 scoringValue = "Edit Distance";
                                 gap.setVisibility(View.INVISIBLE);
+                            } else if (scoringMethod.getSelectedItem().toString().equals("Scoring Method: BLOSUM45")) {
+                                scoringValue = "BLOSUM45";
+                            } else if (scoringMethod.getSelectedItem().toString().equals("Scoring Method: BLOSUM62")) {
+                                scoringValue = "BLOSUM62";
                             } else {
                                 scoringValue = "Score";
                             }
 
-                            if(alignmentValue.equals("Local") || alignmentValue.equals("Dovetail") || alignmentValue.equals("Pattern")) {
-                                if (hasSameCharacter(sequence1.getText().toString(), sequence2.getText().toString())) {
-                                    Log.i("HEY", "GOOD");
-                                    buildTable(sequence1.length() + 1, sequence2.length() + 1);
-                                    extractTraceback();
-                                    align.setText("");
-                                    alignSequence();
-                                    padSequence();
-                                    displayTable(sequence1.length() + 2, sequence2.length() + 2);
+                            if (alignmentValue.equals("Local") || alignmentValue.equals("Dovetail") || alignmentValue.equals("Pattern")) {
+
+                                if (bandedAlignment) {
+                                    if ((kVal >= Math.abs(sequence2.length() - sequence1.length())) && !error) {
+                                        if (hasSameCharacter(sequence1.getText().toString(), sequence2.getText().toString())) {
+                                            Log.i("HEY", "GOOD");
+                                            buildTable(sequence1.length() + 1, sequence2.length() + 1);
+                                            extractTraceback();
+                                            align.setText("");
+                                            alignSequence();
+                                            padSequence();
+                                            if (!error) {
+                                                displayTable(sequence1.length() + 2, sequence2.length() + 2);
+                                            } else {
+                                                Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                                error = false;
+                                                s1.setText("");
+                                                s2.setText("");
+                                                align.setText("");
+                                            }
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "The sequences must share at least 1 common character for this alignment", Toast.LENGTH_LONG).show();
+                                            s1.setText("");
+                                            s2.setText("");
+                                            align.setText("");
+                                        }
+                                    } else if (error) {
+                                        Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                        error = false;
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Make sure the difference between the two sequence lengths is less than or equal to k for banded alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                    }
+
+                                } else {
+                                    if (hasSameCharacter(sequence1.getText().toString(), sequence2.getText().toString()) && !error) {
+                                        Log.i("HEY", "GOOD");
+                                        buildTable(sequence1.length() + 1, sequence2.length() + 1);
+                                        extractTraceback();
+                                        align.setText("");
+                                        alignSequence();
+                                        padSequence();
+                                        if (!error) {
+                                            displayTable(sequence1.length() + 2, sequence2.length() + 2);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                            s1.setText("");
+                                            s2.setText("");
+                                            align.setText("");
+                                            error = false;
+                                        }
+                                    } else if (error) {
+                                        Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                        error = false;
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "The sequences must share at least 1 common character for this alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                    }
+
                                 }
-                                else {
-                                    Toast.makeText(getApplicationContext(), "The sequences must share at least 1 common character for this alignment", Toast.LENGTH_LONG).show();
+                            } else {
+                                if (bandedAlignment) {
+                                    if (((kVal) >= Math.abs(sequence2.length() - sequence1.length())) && !error) {
+                                        buildTable(sequence1.length() + 1, sequence2.length() + 1);
+                                        extractTraceback();
+                                        align.setText("");
+                                        alignSequence();
+                                        padSequence();
+                                        if (!error) {
+                                            displayTable(sequence1.length() + 2, sequence2.length() + 2);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                            s1.setText("");
+                                            s2.setText("");
+                                            align.setText("");
+                                            error = false;
+                                        }
+                                    } else if (error) {
+                                        Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                        error = false;
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Make sure the difference between the two sequence lengths is less than or equal to k for banded alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                    }
+                                } else {
+                                    if (!error) {
+                                        buildTable(sequence1.length() + 1, sequence2.length() + 1);
+                                        extractTraceback();
+                                        align.setText("");
+                                        alignSequence();
+                                        padSequence();
+                                        if (!error) {
+                                            displayTable(sequence1.length() + 2, sequence2.length() + 2);
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                            s1.setText("");
+                                            s2.setText("");
+                                            align.setText("");
+                                            error = false;
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Make sure the inputs are valid for the specified alignment", Toast.LENGTH_LONG).show();
+                                        s1.setText("");
+                                        s2.setText("");
+                                        align.setText("");
+                                        error = false;
+                                    }
                                 }
-                            }
-                            else {
-                                buildTable(sequence1.length() + 1, sequence2.length() + 1);
-                                extractTraceback();
-                                align.setText("");
-                                alignSequence();
-                                padSequence();
-                                displayTable(sequence1.length() + 2, sequence2.length() + 2);
                             }
                         }
                     }
@@ -1779,7 +2266,19 @@ public class MainActivity extends Activity  {
                     mismatchValue = 1;
                     alignmentMethod.setSelection(0);
                 }
+                else if(text.equals("Scoring Method: BLOSUM62") || text.equals("Scoring Method: BLOSUM45")){
+                    gap.setVisibility(View.INVISIBLE);
+                    mismatch.setVisibility(View.INVISIBLE);
+                    match.setVisibility(View.INVISIBLE);
+                    sequence2.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(sequence2.getWindowToken(), 0);
+                }
                 else {
+                    sequence2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                    mismatch.setVisibility(View.VISIBLE);
+                    match.setVisibility(View.VISIBLE);
+                    gap.setVisibility(View.VISIBLE);
                     alignmentMethod.setEnabled(true);
                 }
             }
@@ -1791,6 +2290,17 @@ public class MainActivity extends Activity  {
         // create an alert dialog
         AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
+    }
+
+    public int blosum(int x, int y) {
+        int i = aminoAcids.indexOf(sequence1.getText().charAt(x));
+        int j = aminoAcids.indexOf(sequence2.getText().charAt(y));
+
+        if(scoringValue == "BLOSUM62") {
+            return blossum62[i][j];
+        }
+
+        return blossum45[i][j];
     }
 
     //Centers Drop down boxes (spinners)
