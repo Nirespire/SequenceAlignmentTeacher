@@ -180,6 +180,10 @@
             var content = "";
 
             if ($scope.matrix[i][j].type === 'score' && i > 1 && j > 1) {
+                
+                if($scope.lastAlignmentMethod === 'local'){
+                    content += "Start Over = 0 | ";
+                }
 
                 if ($scope.lastScoringMethod === 'editDistance') {
                     content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j].value + $scope.lastMismatch) + " | ";
@@ -191,9 +195,37 @@
                     } else {
                         content += $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j - 1].value + $scope.lastMismatch) + " because mismatch";
                     }
-                } else {
+                } 
+                else if($scope.lastScoringMethod === 'blosum45'){
                     content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
-                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i][j-1].value + $scope.lastIndel) + " | ";
+                    content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
+                    
+                    var temp = $scope.blosum45($scope.sequence1.charAt(i - 2), $scope.sequence2.charAt(j - 2));
+                    
+                    if ($scope.sequence1.charAt(i - 2) === $scope.sequence2.charAt(j - 2)) {
+                        content += temp + " = " + ($scope.matrix[i - 1][j - 1].value + temp) + " because match";
+                    } else {
+                        content += temp + " = " + ($scope.matrix[i - 1][j - 1].value + temp) + " because mismatch";
+                    }
+                }
+                else if($scope.lastScoringMethod === 'blosum62'){
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i][j-1].value + $scope.lastIndel) + " | ";
+                    content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
+                    
+                    var temp = $scope.blosum62($scope.sequence1.charAt(i - 2), $scope.sequence2.charAt(j - 2));
+                    
+                    if ($scope.sequence1.charAt(i - 2) === $scope.sequence2.charAt(j - 2)) {
+                        content += temp + " = " + ($scope.matrix[i - 1][j - 1].value + temp) + " because match";
+                    } else {
+                        content += temp + " = " + ($scope.matrix[i - 1][j - 1].value + temp) + " because mismatch";
+                    }
+                }
+                else {
+
+                    content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " | ";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i][j-1].value + $scope.lastIndel) + " | ";
                     content += "Diagonal : " + $scope.matrix[i - 1][j - 1].value + " + ";
 
                     if ($scope.sequence1.charAt(i - 2) === $scope.sequence2.charAt(j - 2)) {
@@ -203,13 +235,19 @@
                     }
                 }
             } else if ($scope.matrix[i][j].type === 'score' && i == 1 && j > 1) {
-                if ($scope.lastScoringMethod === 'editDistance') {
+                if($scope.lastAlignmentMethod !== 'global'){
+                    content += "0 because not global alignment";
+                }
+                else if ($scope.lastScoringMethod === 'editDistance') {
                     content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i][j - 1].value + $scope.lastMismatch) + " because delete";
                 } else {
-                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " because delete";
+                    content += "Left : " + $scope.matrix[i][j - 1].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i][j-1].value + $scope.lastIndel) + " because delete";
                 }
             } else if ($scope.matrix[i][j].type === 'score' && i > 1 && j == 1) {
-                if ($scope.lastScoringMethod === 'editDistance') {
+                if($scope.lastAlignmentMethod !== 'global'){
+                    content += "0 because not global alignment";
+                }
+                else if ($scope.lastScoringMethod === 'editDistance') {
                     content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastMismatch + " = " + ($scope.matrix[i - 1][j].value + $scope.lastMismatch) + " because insert";
                 } else {
                     content += "Above : " + $scope.matrix[i - 1][j].value + " + " + $scope.lastIndel + " = " + ($scope.matrix[i - 1][j].value + $scope.lastIndel) + " because insert";
