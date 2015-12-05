@@ -376,12 +376,6 @@
 
         }
 
-
-        //onClick the Check button
-        $scope.check = function () {
-            console.log("check");
-        }
-
         // onClick the Run button
         $scope.initNW = function () {
 
@@ -1035,6 +1029,20 @@
                 $scope.subMatrix[i] = $scope.subMatrix[i].slice(1, $scope.subMatrix[i].length);
             }
             console.log($scope.subMatrix);
+        }
+        
+        $scope.check = function (){
+            $scope.initCheckMatrix();
+            
+            $scope.initNW();
+            
+            $scope.matrix = $scope.checkMatrix;
+        }
+        
+        $scope.initCheckMatrix = function(){
+            $scope.initSubmatrix();
+            $scope.checkMatrix = $.extend(true, [], $scope.matrix)
+            console.log($scope.checkMatrix);
         }
 
     }
