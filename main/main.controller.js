@@ -176,7 +176,6 @@
 
         // Dynamically creates a tooltip for each matrix entry
         $scope.tooltipContent = function (i, j) {
-            console.log(i, j);
             var content = "";
 
             if ($scope.matrix[i][j].type === 'score' && i > 1 && j > 1) {
@@ -1032,17 +1031,41 @@
         }
         
         $scope.check = function (){
+            
+            $scope.showPopups = false;
+            
             $scope.initCheckMatrix();
             
             $scope.initNW();
             
+            $scope.initCorrectMatrix();
+            
             $scope.matrix = $scope.checkMatrix;
+            
+            console.log($scope.checkMatrix);
+            console.log($scope.matrix)
+            
+            for(var i=1; i < $scope.matrix.length; i++){
+                for(var j=1; j < $scope.matrix[i].length; j++){
+                    if($scope.matrix[i][j].value === $scope.correctMatrix[i][j].value){
+                        $scope.matrix[i][j].color = 'green';
+                    }
+                    else{
+                        $scope.matrix[i][j].color = 'red';
+                    }
+                }
+            }
+            
         }
         
         $scope.initCheckMatrix = function(){
-            $scope.initSubmatrix();
             $scope.checkMatrix = $.extend(true, [], $scope.matrix)
             console.log($scope.checkMatrix);
+        }
+        
+        $scope.initCorrectMatrix = function(){
+            $scope.correctMatrix = $.extend(true, [], $scope.matrix)
+            console.log($scope.correctMatrix);
         }
 
     }

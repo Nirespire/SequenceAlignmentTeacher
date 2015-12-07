@@ -71,6 +71,14 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: lightpink;
 }
 
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
 .tooltip {
 /*
     background-color:#000;
